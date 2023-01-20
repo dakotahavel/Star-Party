@@ -21,7 +21,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
-        window?.rootViewController = UINavigationController(rootViewController: TodaysApodViewController())
+        window?.rootViewController = UINavigationController(rootViewController: ApodsGridViewController())
         window?.rootViewController?.view.backgroundColor = .systemBackground
         window?.makeKeyAndVisible()
     }

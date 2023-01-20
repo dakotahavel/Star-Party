@@ -91,32 +91,68 @@ class NasaAPI {
         return try await json.fetch(type, from: url, with: session)
     }
 
-    func fetchApod(_ query: ApodQuery) async throws -> APOD {
-        let url = try makeRoute(query)
-        let kind = APOD.self
-        let res = try await fetch(kind, from: url)
-        print("apod res", res)
-        return res
+    func fakeRandomApods() -> [APOD] {
+        let path = Bundle.main.url(forResource: "random", withExtension: "json")!
+
+        do {
+            let data = try Data(contentsOf: path)
+            let apods = try JSONDecoder().decode([APOD].self, from: data)
+
+            return apods
+        } catch {
+            print(error)
+        }
+
+        return []
     }
 
-    func fetchApodImageData(_ query: ApodQuery) async throws -> (Data?, APOD) {
-        let apod = try await fetchApod(query)
-        let hdurl = URL(string: apod.hdurl)
+    func fetchApodsData(_ query: ApodQuery) async throws -> [APOD] {
+        switch query {
+        case let .random(count):
+            print("rando count", count)
+            return fakeRandomApods()
+        default:
+            let url = try makeRoute(query)
+            let kind = [APOD].self
+            let res = try await fetch(kind, from: url)
+
+            return res
+        }
+    }
+
+    func fetchTodaysApod() async throws -> APOD {
+        let url = try makeRoute(ApodQuery.today)
+        let kind = APOD.self
+        var apod = try await fetch(kind, from: url)
+        let data = try await fetchApodImageData(apod)
+        apod.imageData = data
+        return apod
+    }
+
+    func fetchApodImageData(_ apod: APOD) async throws -> Data? {
+        var hdurl: URL?
+
+        if let setUrl = apod.hdurl {
+            if let hd = URL(string: setUrl) {
+                hdurl = hd
+            }
+        }
+
         let sdurl = URL(string: apod.url)
 
         if let hdurl {
             let (imageData, response) = try await session.data(from: hdurl)
             try checkResponseCode(response)
-            return (imageData, apod)
+            return imageData
         }
 
         if let sdurl {
             let (imageData, response) = try await session.data(from: sdurl)
             try checkResponseCode(response)
-            return (imageData, apod)
+            return imageData
         }
 
-        return (nil, apod)
+        return nil
     }
 
 //    static func getApod() async throws -> APOD? {

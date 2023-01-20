@@ -9,7 +9,17 @@ import UIKit
 
 struct ApodViewModel {
     let apod: APOD
-    var imageData: Data?
+
+    let dateFormatter: DateFormatter = {
+        let df = DateFormatter()
+        df.locale = Locale(identifier: "en_US_POSIX")
+        df.dateFormat = "yyyy-MM-dd"
+        return df
+    }()
+
+    var dateObj: Date? {
+        return dateFormatter.date(from: apod.date)
+    }
 
     var descriptionAttrString: NSAttributedString {
         let desc = apod.explanation

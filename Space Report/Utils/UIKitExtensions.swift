@@ -191,6 +191,14 @@ extension UIView: Initable {
 // MARK: - UIColor
 
 extension UIColor {
+    static var random: UIColor {
+        return UIColor(
+            red: .random(in: 0...255),
+            green: .random(in: 0...255),
+            blue: .random(in: 0...255)
+        )
+    }
+
     static func rgb(red: CGFloat, green: CGFloat, blue: CGFloat) -> UIColor {
         return UIColor(red: red / 255, green: green / 255, blue: blue / 255, alpha: 1)
     }

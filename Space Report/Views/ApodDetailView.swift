@@ -55,7 +55,6 @@ class ApodDetailView: UIView {
     private var descriptionViewPlaceholder: UIView = .init()
 
     private func configureLayout() {
-        
         addSubview(heroImageView)
         heroImageView.fillHorizontal(self, safe: false)
         heroImageView.anchor(top: topAnchor, bottom: centerYAnchor)
@@ -97,7 +96,7 @@ class ApodDetailView: UIView {
     }
 
     private func configureWithData() {
-        if let data = apodViewModel?.imageData {
+        if let data = apodViewModel?.apod.imageData {
             UIView.transition(with: heroImageView, duration: 0.6, options: .transitionCrossDissolve) { [self] in
                 heroImageView.image = UIImage(data: data)
                 heroImageView.contentMode = .scaleAspectFill
@@ -109,7 +108,6 @@ class ApodDetailView: UIView {
             descriptionView.attributedText = apodViewModel?.descriptionAttrString
             hidePlaceholders()
         }
-        print("configure with data", apodViewModel?.descriptionAttrString)
     }
 
     @available(*, unavailable)
