@@ -34,5 +34,6 @@ struct APOD: Codable, Identifiable {
     let title: String
     let url: String
 
-    var imageData: Data?
+    var sdImageData: Data?
+    var hdImageData: Data?
 }

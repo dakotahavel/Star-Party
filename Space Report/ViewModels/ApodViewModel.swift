@@ -8,7 +8,7 @@
 import UIKit
 
 struct ApodViewModel {
-    let apod: APOD
+    var apod: APOD
 
     let dateFormatter: DateFormatter = {
         let df = DateFormatter()

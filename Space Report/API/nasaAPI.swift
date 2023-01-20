@@ -22,6 +22,19 @@ func checkResponseCode(_ response: URLResponse) throws {
     }
 }
 
+func hasGoodResponseCode(_ response: URLResponse?) -> Bool {
+    guard let httpResponse = response as? HTTPURLResponse else {
+        return false
+    }
+    let code = httpResponse.statusCode
+
+    if 200..<300 ~= code {
+        return true
+    }
+
+    return false
+}
+
 private func makeRoute(_ request: APIRequest, queryItems: [URLQueryItem] = []) throws -> URL {
     var components = URLComponents()
     components.scheme = "https"
@@ -82,6 +95,8 @@ class NasaAPI {
     static let shared = NasaAPI()
     private lazy var session: URLSession = {
         let config = URLSessionConfiguration.default
+        config.httpMaximumConnectionsPerHost = 100
+        config.requestCachePolicy = .reloadIgnoringLocalCacheData
         return URLSession(
             configuration: config
         )
@@ -96,7 +111,10 @@ class NasaAPI {
 
         do {
             let data = try Data(contentsOf: path)
-            let apods = try JSONDecoder().decode([APOD].self, from: data)
+            let apods = try JSONDecoder().decode([APOD].self, from: data).filter { apod in
+                // some urls had vimeo or youtube links
+                apod.url.contains("apod.nasa.gov/apod")
+            }
 
             return apods
         } catch {
@@ -124,32 +142,67 @@ class NasaAPI {
         let url = try makeRoute(ApodQuery.today)
         let kind = APOD.self
         var apod = try await fetch(kind, from: url)
-        let data = try await fetchApodImageData(apod)
-        apod.imageData = data
+        let data = try await fetchApodImageData(apod, quality: .best)
+        apod.sdImageData = data
         return apod
     }
 
-    func fetchApodImageData(_ apod: APOD) async throws -> Data? {
-        var hdurl: URL?
+    enum ApodImageQuality {
+        case highDef
+        case standard
+        case best
+    }
 
-        if let setUrl = apod.hdurl {
-            if let hd = URL(string: setUrl) {
-                hdurl = hd
+    func resolveApodImageURL(_ apod: APOD, quality: ApodImageQuality = .best) -> URL? {
+        switch quality {
+        case .standard:
+            return resolveStandardApodImageURL(apod)
+        case .highDef:
+            return resolveHighDefApodImageURL(apod)
+        case .best:
+            let high = resolveHighDefApodImageURL(apod)
+            guard let high else {
+                return resolveStandardApodImageURL(apod)
+            }
+            return high
+        }
+    }
+
+    func resolveStandardApodImageURL(_ apod: APOD) -> URL? {
+        if let sd = URL(string: apod.url) {
+            return sd
+        }
+
+        return nil
+    }
+
+    func resolveHighDefApodImageURL(_ apod: APOD) -> URL? {
+        if let hdurl = apod.hdurl {
+            if let hd = URL(string: hdurl) {
+                return hd
             }
         }
 
-        let sdurl = URL(string: apod.url)
+        return nil
+    }
 
-        if let hdurl {
-            let (imageData, response) = try await session.data(from: hdurl)
+    func fetchApodImageData(_ apod: APOD, quality: ApodImageQuality) async throws -> Data {
+        if let imageUrl = resolveApodImageURL(apod, quality: quality) {
+            let (imageData, response) = try await session.data(from: imageUrl)
             try checkResponseCode(response)
             return imageData
         }
 
-        if let sdurl {
-            let (imageData, response) = try await session.data(from: sdurl)
-            try checkResponseCode(response)
-            return imageData
+        throw apiError.dataDecodeError
+    }
+
+    func fetchApodImageDataTask(_ apod: APOD, quality: ApodImageQuality, completion: @escaping URLSessionDataTaskCompletion) -> URLSessionDataTask? {
+        print("fetching image for", apod.date, apod.title)
+        if let imageUrl = resolveApodImageURL(apod, quality: quality) {
+            let urlRequest = URLRequest(url: imageUrl)
+            let task = session.dataTask(with: urlRequest, completionHandler: completion)
+            task.resume()
+            return task
         }
 
         return nil

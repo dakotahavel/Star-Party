@@ -36,3 +36,5 @@ extension URLQueryItem {
         return out
     }
 }
+
+typealias URLSessionDataTaskCompletion = (Data?, URLResponse?, (any Error)?) -> Void

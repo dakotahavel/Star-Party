@@ -12,4 +12,5 @@ enum apiError: Error {
     case clientError
     case serverError
     case unhandledResponseType
+    case dataDecodeError
 }

@@ -19,6 +19,14 @@ class ApodDetailView: UIView {
         configureLayout()
     }
 
+    init(apodViewModel: ApodViewModel) {
+        super.init(frame: .zero)
+        backgroundColor = .systemBackground
+        configureLayout()
+        self.apodViewModel = apodViewModel
+        configureWithData()
+    }
+
     private var heroImageView: UIImageView = .configured { iv in
         iv.backgroundColor = .black
         iv.tintColor = .label
@@ -96,17 +104,40 @@ class ApodDetailView: UIView {
     }
 
     private func configureWithData() {
-        if let data = apodViewModel?.apod.imageData {
-            UIView.transition(with: heroImageView, duration: 0.6, options: .transitionCrossDissolve) { [self] in
-                heroImageView.image = UIImage(data: data)
-                heroImageView.contentMode = .scaleAspectFill
-                heroImageView.clipsToBounds = true
-            }
+        var data = apodViewModel?.apod.hdImageData
 
-            copyrightLabel.attributedText = apodViewModel?.copyrightAttrString
-            titleLabel.text = apodViewModel?.apod.title
-            descriptionView.attributedText = apodViewModel?.descriptionAttrString
-            hidePlaceholders()
+        if data == nil {
+            data = apodViewModel?.apod.sdImageData
+        }
+
+        guard let data else {
+            fetchApodImage()
+            return
+        }
+
+        UIView.transition(with: heroImageView, duration: 0.6, options: .transitionCrossDissolve) { [self] in
+            heroImageView.image = UIImage(data: data)
+            heroImageView.contentMode = .scaleAspectFill
+            heroImageView.clipsToBounds = true
+        }
+
+        copyrightLabel.attributedText = apodViewModel?.copyrightAttrString
+        titleLabel.text = apodViewModel?.apod.title
+        descriptionView.attributedText = apodViewModel?.descriptionAttrString
+        hidePlaceholders()
+    }
+
+    private func fetchApodImage() {
+        if apodViewModel?.apod == nil {
+            return
+        }
+
+        Task {
+            if let data = try? await NasaAPI.shared.fetchApodImageData(apodViewModel!.apod, quality: .best) {
+                DispatchQueue.main.async {
+                    self.apodViewModel?.apod.sdImageData = data
+                }
+            }
         }
     }
 

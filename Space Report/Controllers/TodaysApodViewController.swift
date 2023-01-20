@@ -64,7 +64,9 @@ class TodaysApodViewController: UIViewController {
     func fetchTodaysApodAndImage() {
         Task {
             if let apod = try? await NasaAPI.shared.fetchTodaysApod() {
-                apodHeroView.apodViewModel = ApodViewModel(apod: apod)
+                DispatchQueue.main.async {
+                    self.apodHeroView.apodViewModel = ApodViewModel(apod: apod)
+                }
             }
         }
     }

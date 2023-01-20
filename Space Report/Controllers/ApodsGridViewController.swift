@@ -39,7 +39,7 @@ class ApodsGridViewController: UICollectionViewController {
 
             let section = NSCollectionLayoutSection(group: group)
 
-            let headerItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1 / 20))
+            let headerItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(fraction / 10))
             let headerItem = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerItemSize, elementKind: ApodHeaderCell.supplementaryKind, alignment: .top)
             headerItem.pinToVisibleBounds = true
             section.boundarySupplementaryItems = [headerItem]
@@ -78,6 +78,14 @@ class ApodsGridViewController: UICollectionViewController {
 //        print(sections)
     }
 
+    func resolveSection(_ indexPath: IndexPath) -> ApodSection {
+        return sections[indexPath.section]
+    }
+
+    func resolveApodVM(_ indexPath: IndexPath) -> ApodViewModel {
+        return sections[indexPath.section].items[indexPath.item]
+    }
+
     // MARK: - Delegate Methods
 
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -90,7 +98,7 @@ class ApodsGridViewController: UICollectionViewController {
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ApodImageCell.reuseId, for: indexPath) as? ApodImageCell else { return ApodImageCell() }
-        cell.apodViewModel = sections[indexPath.section].items[indexPath.item]
+        cell.apodViewModel = resolveApodVM(indexPath)
         return cell
     }
 
@@ -98,8 +106,8 @@ class ApodsGridViewController: UICollectionViewController {
         guard let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: ApodHeaderCell.supplementaryKind, withReuseIdentifier: ApodHeaderCell.reuseId, for: indexPath) as? ApodHeaderCell else {
             return ApodHeaderCell()
         }
-
-        headerView.title = sections[indexPath.section].title
+        let section = resolveSection(indexPath)
+        headerView.title = section.title
 
         return headerView
     }
@@ -113,6 +121,18 @@ class ApodsGridViewController: UICollectionViewController {
             assertionFailure("\(self) - Unexpected element kind: \(kind).")
             return UICollectionReusableView()
         }
+    }
+
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let apodVM = resolveApodVM(indexPath)
+        let detailView = ApodDetailView(apodViewModel: apodVM)
+        let v = UIViewController()
+        v.view.addSubview(detailView)
+        detailView.fillView(v.view, safe: false)
+        v.modalPresentationStyle = .pageSheet
+        present(v, animated: true)
+
+//        navigationController?.pushViewController(v, animated: true)
     }
 
     // MARK: - boilerplate

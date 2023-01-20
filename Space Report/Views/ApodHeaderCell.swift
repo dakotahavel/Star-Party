@@ -20,9 +20,16 @@ class ApodHeaderCell: UICollectionReusableView {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
+        backgroundColor = .clear
+
+        let blurEffect = UIBlurEffect(style: .systemThinMaterial)
+        let blurView = UIVisualEffectView(effect: blurEffect)
+
+        addSubview(blurView)
+        blurView.fillView(self)
+
         addSubview(label)
         label.centerY(inView: self, leftAnchor: leftAnchor, paddingLeft: frame.width / 20)
-        backgroundColor = .gray
     }
 
     private let label: UILabel = .configured { label in
