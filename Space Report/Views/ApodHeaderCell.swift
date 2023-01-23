@@ -9,7 +9,7 @@ import UIKit
 
 class ApodHeaderCell: UICollectionReusableView {
     static let reuseId = "ApodHeaderCell"
-    static let supplementaryKind = "ApodYearHeader"
+    static let supplementaryKind = "ApodDateHeader"
 
     var title: String? {
         didSet {

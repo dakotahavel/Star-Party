@@ -25,7 +25,7 @@
 		65634E702974D55400A13D45 /* NetworkingExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65634E6F2974D55400A13D45 /* NetworkingExtensions.swift */; };
 		65634EBC2977172C00A13D45 /* apiError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65634EBB2977172C00A13D45 /* apiError.swift */; };
 		65634EBE297762BA00A13D45 /* ApodViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65634EBD297762BA00A13D45 /* ApodViewModel.swift */; };
-		65634EC12977724C00A13D45 /* ApodDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65634EC02977724C00A13D45 /* ApodDetailView.swift */; };
+		65634EC12977724C00A13D45 /* ApodDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65634EC02977724C00A13D45 /* ApodDetailViewController.swift */; };
 		65634ECA2977B43400A13D45 /* TextLoadingPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65634EC92977B43400A13D45 /* TextLoadingPlaceholder.swift */; };
 		65634ECC2978594D00A13D45 /* BWGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65634ECB2978594D00A13D45 /* BWGradientView.swift */; };
 		65634ECF2978D90600A13D45 /* ApodsGridViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65634ECE2978D90600A13D45 /* ApodsGridViewController.swift */; };
@@ -34,6 +34,8 @@
 		65634EDF2979D1FD00A13D45 /* ApodImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65634EDE2979D1FD00A13D45 /* ApodImageCell.swift */; };
 		65634EE12979DEBA00A13D45 /* StandardTypeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65634EE02979DEBA00A13D45 /* StandardTypeExtensions.swift */; };
 		65634EE5297A3B9C00A13D45 /* ApodHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65634EE4297A3B9C00A13D45 /* ApodHeaderCell.swift */; };
+		65634EE9297B48C500A13D45 /* Effects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65634EE8297B48C500A13D45 /* Effects.swift */; };
+		65634EEB297C5DED00A13D45 /* ApodFiltersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65634EEA297C5DED00A13D45 /* ApodFiltersViewController.swift */; };
 		65D8451C296B29C9008D7708 /* nasaAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D8451B296B29C9008D7708 /* nasaAPI.swift */; };
 /* End PBXBuildFile section */
 
@@ -77,7 +79,7 @@
 		65634E6F2974D55400A13D45 /* NetworkingExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkingExtensions.swift; sourceTree = "<group>"; };
 		65634EBB2977172C00A13D45 /* apiError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = apiError.swift; sourceTree = "<group>"; };
 		65634EBD297762BA00A13D45 /* ApodViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApodViewModel.swift; sourceTree = "<group>"; };
-		65634EC02977724C00A13D45 /* ApodDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApodDetailView.swift; sourceTree = "<group>"; };
+		65634EC02977724C00A13D45 /* ApodDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApodDetailViewController.swift; sourceTree = "<group>"; };
 		65634EC92977B43400A13D45 /* TextLoadingPlaceholder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextLoadingPlaceholder.swift; sourceTree = "<group>"; };
 		65634ECB2978594D00A13D45 /* BWGradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BWGradientView.swift; sourceTree = "<group>"; };
 		65634ECE2978D90600A13D45 /* ApodsGridViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApodsGridViewController.swift; sourceTree = "<group>"; };
@@ -86,6 +88,8 @@
 		65634EDE2979D1FD00A13D45 /* ApodImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApodImageCell.swift; sourceTree = "<group>"; };
 		65634EE02979DEBA00A13D45 /* StandardTypeExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandardTypeExtensions.swift; sourceTree = "<group>"; };
 		65634EE4297A3B9C00A13D45 /* ApodHeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApodHeaderCell.swift; sourceTree = "<group>"; };
+		65634EE8297B48C500A13D45 /* Effects.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Effects.swift; sourceTree = "<group>"; };
+		65634EEA297C5DED00A13D45 /* ApodFiltersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApodFiltersViewController.swift; sourceTree = "<group>"; };
 		65D8451B296B29C9008D7708 /* nasaAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = nasaAPI.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -178,6 +182,7 @@
 			children = (
 				6539A514296A0B3C00470F80 /* Colors.swift */,
 				65634ED02978DEE400A13D45 /* NasaPrimaryButton.swift */,
+				65634EE8297B48C500A13D45 /* Effects.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -211,7 +216,7 @@
 		65634E642972626B00A13D45 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				65634EC02977724C00A13D45 /* ApodDetailView.swift */,
+				65634EC02977724C00A13D45 /* ApodDetailViewController.swift */,
 				65634EDE2979D1FD00A13D45 /* ApodImageCell.swift */,
 				65634EE4297A3B9C00A13D45 /* ApodHeaderCell.swift */,
 			);
@@ -223,6 +228,7 @@
 			children = (
 				65634E652972628A00A13D45 /* TodaysApodViewController.swift */,
 				65634ECE2978D90600A13D45 /* ApodsGridViewController.swift */,
+				65634EEA297C5DED00A13D45 /* ApodFiltersViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -401,6 +407,7 @@
 				6539A4EB2969FD8500470F80 /* Space_Report.xcdatamodeld in Sources */,
 				6539A515296A0B3C00470F80 /* Colors.swift in Sources */,
 				65634EE12979DEBA00A13D45 /* StandardTypeExtensions.swift in Sources */,
+				65634EEB297C5DED00A13D45 /* ApodFiltersViewController.swift in Sources */,
 				6539A525296A7B4A00470F80 /* APOD.swift in Sources */,
 				65634EBC2977172C00A13D45 /* apiError.swift in Sources */,
 				65634EDF2979D1FD00A13D45 /* ApodImageCell.swift in Sources */,
@@ -409,8 +416,9 @@
 				65634ECF2978D90600A13D45 /* ApodsGridViewController.swift in Sources */,
 				65634EE5297A3B9C00A13D45 /* ApodHeaderCell.swift in Sources */,
 				65634E702974D55400A13D45 /* NetworkingExtensions.swift in Sources */,
-				65634EC12977724C00A13D45 /* ApodDetailView.swift in Sources */,
+				65634EC12977724C00A13D45 /* ApodDetailViewController.swift in Sources */,
 				65634E662972628A00A13D45 /* TodaysApodViewController.swift in Sources */,
+				65634EE9297B48C500A13D45 /* Effects.swift in Sources */,
 				65634E6C2972693000A13D45 /* DebugViews.swift in Sources */,
 				6539A4E12969FD8500470F80 /* AppDelegate.swift in Sources */,
 				6539A4E32969FD8500470F80 /* SceneDelegate.swift in Sources */,
@@ -590,7 +598,7 @@
 				INFOPLIST_FILE = "Space Report/Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.news";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UIMainStoryboardFile = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
@@ -623,7 +631,7 @@
 				INFOPLIST_FILE = "Space Report/Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.news";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UIMainStoryboardFile = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";

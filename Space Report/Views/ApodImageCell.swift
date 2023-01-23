@@ -27,7 +27,7 @@ class ApodImageCell: UICollectionViewCell {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .random
+        backgroundColor = .random.withAlphaComponent(0.5)
 
         addSubview(label)
         label.center(inView: self)
@@ -45,8 +45,7 @@ class ApodImageCell: UICollectionViewCell {
     }
 
     func configureCell() {
-        print("configure cell", apodViewModel?.apod.date)
-        imageView?.image = nil
+        cleanCell()
         guard let apodViewModel else {
             noViewModelFallback()
             return
@@ -60,7 +59,7 @@ class ApodImageCell: UICollectionViewCell {
 
         imageFetch = NasaAPI.shared.fetchApodImageDataTask(apodViewModel.apod, quality: .standard, completion: { [weak self] data, resp, error in
             if error != nil || !hasGoodResponseCode(resp) {
-                print(String(describing: error), String(describing: resp))
+//                print(String(describing: error), String(describing: resp))
                 self?.noImageDataFallback()
                 return
             }
@@ -76,6 +75,15 @@ class ApodImageCell: UICollectionViewCell {
         })
     }
 
+    func cleanCell() {
+        DispatchQueue.main.async { [weak self] in
+            self?.imageView?.image = nil
+            self?.label.text = nil
+            self?.loader.isHidden = true
+            self?.loader.stopAnimating()
+        }
+    }
+
     func noViewModelFallback() {
         DispatchQueue.main.async { [weak self] in
             print("no view model")
@@ -87,6 +95,7 @@ class ApodImageCell: UICollectionViewCell {
         DispatchQueue.main.async { [weak self] in
             self?.loader.isHidden = false
             self?.loader.startAnimating()
+            self?.noImageDataFallback()
         }
     }
 

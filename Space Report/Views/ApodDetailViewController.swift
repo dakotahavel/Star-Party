@@ -7,24 +7,20 @@
 
 import UIKit
 
-class ApodDetailView: UIView {
+class ApodDetailViewController: UIViewController {
     var apodViewModel: ApodViewModel? {
         didSet {
             configureWithData()
         }
     }
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .systemBackground
         configureLayout()
-    }
-
-    init(apodViewModel: ApodViewModel) {
-        super.init(frame: .zero)
-        backgroundColor = .systemBackground
-        configureLayout()
-        self.apodViewModel = apodViewModel
-        configureWithData()
+        if apodViewModel != nil {
+            configureWithData()
+        }
     }
 
     private var heroImageView: UIImageView = .configured { iv in
@@ -63,31 +59,31 @@ class ApodDetailView: UIView {
     private var descriptionViewPlaceholder: UIView = .init()
 
     private func configureLayout() {
-        addSubview(heroImageView)
-        heroImageView.fillHorizontal(self, safe: false)
-        heroImageView.anchor(top: topAnchor, bottom: centerYAnchor)
+        view.addSubview(heroImageView)
+        heroImageView.fillHorizontal(view, safe: false)
+        heroImageView.anchor(top: view.topAnchor, bottom: view.centerYAnchor)
         heroImageView.addSubview(copyrightLabel)
         copyrightLabel.anchor(left: heroImageView.leftAnchor, bottom: heroImageView.bottomAnchor, paddingLeft: 4, paddingBottom: 4)
 
-        addSubview(titleLabel)
-        titleLabel.fillHorizontal(self)
+        view.addSubview(titleLabel)
+        titleLabel.fillHorizontal(view)
         titleLabel.anchor(top: heroImageView.bottomAnchor)
         titleLabelPlaceholderHeight = titleLabel.heightAnchor.constraint(equalToConstant: 60)
         titleLabelPlaceholderHeight?.isActive = true
 
-        addSubview(titleBreak)
+        view.addSubview(titleBreak)
         titleBreak.anchor(top: titleLabel.bottomAnchor)
-        titleBreak.fillHorizontal(self)
+        titleBreak.fillHorizontal(view)
 
-        addSubview(descriptionView)
-        descriptionView.anchor(top: titleBreak.bottomAnchor, left: safeAreaLayoutGuide.leftAnchor, bottom: bottomAnchor, right: safeAreaLayoutGuide.rightAnchor)
+        view.addSubview(descriptionView)
+        descriptionView.anchor(top: titleBreak.bottomAnchor, left: view.safeAreaLayoutGuide.leftAnchor, bottom: view.bottomAnchor, right: view.safeAreaLayoutGuide.rightAnchor)
 
         titleLabelPlaceholder = TextLoadingPlaceholder(fontSize: titleLabel.font.pointSize, lineHeight: titleLabel.font.lineHeight)
-        addSubview(titleLabelPlaceholder)
+        view.addSubview(titleLabelPlaceholder)
         titleLabelPlaceholder.fillView(titleLabel)
 
         descriptionViewPlaceholder = TextLoadingPlaceholder(fontSize: descriptionView.font?.pointSize ?? 16, lineHeight: descriptionView.font?.lineHeight ?? 18)
-        addSubview(descriptionViewPlaceholder)
+        view.addSubview(descriptionViewPlaceholder)
         descriptionViewPlaceholder.fillView(descriptionView)
     }
 
@@ -104,12 +100,13 @@ class ApodDetailView: UIView {
     }
 
     private func configureWithData() {
+        // check for high res image first
         var data = apodViewModel?.apod.hdImageData
-
+        // then sd image
         if data == nil {
             data = apodViewModel?.apod.sdImageData
         }
-
+        // if neither, try to get the best available and then load
         guard let data else {
             fetchApodImage()
             return
@@ -128,6 +125,7 @@ class ApodDetailView: UIView {
     }
 
     private func fetchApodImage() {
+        print("detail view is fetching image")
         if apodViewModel?.apod == nil {
             return
         }
@@ -139,10 +137,5 @@ class ApodDetailView: UIView {
                 }
             }
         }
-    }
-
-    @available(*, unavailable)
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }

@@ -13,6 +13,7 @@ func checkResponseCode(_ response: URLResponse) throws {
         throw apiError.unhandledResponseType
     }
     let code = httpResponse.statusCode
+    print(code, response.url)
 
     if (300..<400).contains(code) {
         throw apiError.clientError
@@ -87,6 +88,19 @@ enum ApodQuery: APIRequest {
             return []
         }
     }
+
+    var queryDescription: String {
+        switch self {
+        case let .range(start_date: start_date, end_date: end_date):
+            return "\(start_date) to \(end_date)"
+        case let .random(count: count):
+            return "\(count) Random APODs"
+        case let .date(date: date):
+            return "the day \(date)"
+        case .today:
+            return "For Today's APOD"
+        }
+    }
 }
 
 // MARK: - NasaAPI
@@ -95,7 +109,6 @@ class NasaAPI {
     static let shared = NasaAPI()
     private lazy var session: URLSession = {
         let config = URLSessionConfiguration.default
-        config.httpMaximumConnectionsPerHost = 100
         config.requestCachePolicy = .reloadIgnoringLocalCacheData
         return URLSession(
             configuration: config
@@ -125,16 +138,13 @@ class NasaAPI {
     }
 
     func fetchApodsData(_ query: ApodQuery) async throws -> [APOD] {
-        switch query {
-        case let .random(count):
-            print("rando count", count)
-            return fakeRandomApods()
-        default:
-            let url = try makeRoute(query)
-            let kind = [APOD].self
-            let res = try await fetch(kind, from: url)
-
-            return res
+        let url = try makeRoute(query)
+        print("fetch apods data url", url)
+        let kind = [APOD].self
+        let res = try await fetch(kind, from: url)
+        return res.filter { apod in
+            // some urls had vimeo or youtube links not handled yet
+            apod.url.contains("apod.nasa.gov/apod")
         }
     }
 
@@ -197,7 +207,6 @@ class NasaAPI {
     }
 
     func fetchApodImageDataTask(_ apod: APOD, quality: ApodImageQuality, completion: @escaping URLSessionDataTaskCompletion) -> URLSessionDataTask? {
-        print("fetching image for", apod.date, apod.title)
         if let imageUrl = resolveApodImageURL(apod, quality: quality) {
             let urlRequest = URLRequest(url: imageUrl)
             let task = session.dataTask(with: urlRequest, completionHandler: completion)
@@ -207,24 +216,4 @@ class NasaAPI {
 
         return nil
     }
-
-//    static func getApod() async throws -> APOD? {
-//        return try await json.fetch(from: "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY", for: APOD.self)
-//    }
-
-//    static func fetchApodImage(completion: @escaping (UIImage) -> Void) {
-//        DispatchQueue.global(qos: .userInitiated).async {
-//            if
-//                let data = try? Data(contentsOf: URL(string: "https://apod.nasa.gov/apod/image/2301/jwst-ngc346.png")),
-//                let image = UIImage(data: data)
-//            {
-//                completion(image)
-
-//                DispatchQueue.main.async {
-//                    print("Image fetched", image)
-//                    self?.apodImage = image
-//                }
-//            }
-//        }
-//    }
 }

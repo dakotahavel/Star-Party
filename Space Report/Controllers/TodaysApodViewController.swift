@@ -9,54 +9,14 @@ import Foundation
 import SwiftUI
 import UIKit
 
-// MARK: - HighlightButton
-
-class HighlightButton: UIButton {
-    override var isHighlighted: Bool {
-        didSet {
-            blurView.isHidden = !isHighlighted
-        }
-    }
-
-    init(with blurEffectStyle: UIBlurEffect.Style) {
-        super.init(frame: .zero)
-        layer.masksToBounds = true
-        layer.cornerRadius = 4
-        blurView.effect = UIBlurEffect(style: blurEffectStyle)
-        titleLabel?.adjustsFontForContentSizeCategory = true
-        titleLabel?.adjustsFontSizeToFitWidth = true
-
-        if let image = imageView {
-            insertSubview(blurView, belowSubview: image)
-        } else {
-            insertSubview(blurView, at: 0)
-        }
-
-//        blurView.constrain(to: self)
-        blurView.fillView(self, safe: false)
-    }
-
-    @available(*, unavailable)
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    private let blurView: UIVisualEffectView = {
-        let bv = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
-        bv.translatesAutoresizingMaskIntoConstraints = false
-        bv.isHidden = true
-
-        return bv
-    }()
-}
-
 // MARK: - TodaysApodViewController
 
 class TodaysApodViewController: UIViewController {
-    var apodHeroView = ApodDetailView()
+    var apodDetailViewController = ApodDetailViewController()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         fetchTodaysApodAndImage()
         configureLayout()
     }
@@ -65,7 +25,7 @@ class TodaysApodViewController: UIViewController {
         Task {
             if let apod = try? await NasaAPI.shared.fetchTodaysApod() {
                 DispatchQueue.main.async {
-                    self.apodHeroView.apodViewModel = ApodViewModel(apod: apod)
+                    self.apodDetailViewController.apodViewModel = ApodViewModel(apod: apod)
                 }
             }
         }
@@ -83,19 +43,24 @@ class TodaysApodViewController: UIViewController {
     }
 
     func configureLayout() {
-        view.addSubview(apodHeroView)
-        apodHeroView.anchor(top: view.topAnchor)
-        apodHeroView.setHeight(view.frame.height * 0.85)
-        apodHeroView.fillHorizontal(view, safe: false)
+        if let apodHeroView = apodDetailViewController.view {
+            addChild(apodDetailViewController)
+            view.addSubview(apodHeroView)
+            apodDetailViewController.didMove(toParent: self)
 
-        let buttonLayoutContainer = UIView()
-        view.addSubview(buttonLayoutContainer)
-        buttonLayoutContainer.anchor(top: apodHeroView.bottomAnchor, left: view.leftAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, right: view.rightAnchor)
+            apodHeroView.anchor(top: view.topAnchor)
+            apodHeroView.setHeight(view.frame.height * 0.85)
+            apodHeroView.fillHorizontal(view, safe: false)
 
-        buttonLayoutContainer.addSubview(ExploreApodsButton)
-        ExploreApodsButton.centerY(inView: buttonLayoutContainer)
+            let buttonLayoutContainer = UIView()
+            view.addSubview(buttonLayoutContainer)
+            buttonLayoutContainer.anchor(top: apodHeroView.bottomAnchor, left: view.leftAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, right: view.rightAnchor)
 
-        ExploreApodsButton.anchor(left: buttonLayoutContainer.leftAnchor, right: buttonLayoutContainer.rightAnchor, paddingLeft: 10, paddingRight: 10)
+            buttonLayoutContainer.addSubview(ExploreApodsButton)
+            ExploreApodsButton.centerY(inView: buttonLayoutContainer)
+
+            ExploreApodsButton.anchor(left: buttonLayoutContainer.leftAnchor, right: buttonLayoutContainer.rightAnchor, paddingLeft: 10, paddingRight: 10)
+        }
     }
 }
 

@@ -19,6 +19,8 @@ import Foundation
 //    url: "https://apod.nasa.gov/apod/image/2301/ISS_TIANHE_FINAL_4_APOD1024.jpg"
 // }
 
+// MARK: - APOD
+
 struct APOD: Codable, Identifiable {
     // Should be one per day so date is the unique ID
     var id: String {

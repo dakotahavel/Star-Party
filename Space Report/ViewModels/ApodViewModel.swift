@@ -7,18 +7,37 @@
 
 import UIKit
 
+// publicly available b/c needed
+
+let ApodDateFormatter: DateFormatter = {
+    let df = DateFormatter()
+    df.locale = Locale(identifier: "en_US_POSIX")
+    df.dateFormat = "yyyy-MM-dd"
+    return df
+}()
+
+// MARK: - ApodViewModel
+
 struct ApodViewModel {
     var apod: APOD
 
-    let dateFormatter: DateFormatter = {
-        let df = DateFormatter()
-        df.locale = Locale(identifier: "en_US_POSIX")
-        df.dateFormat = "yyyy-MM-dd"
-        return df
-    }()
-
     var dateObj: Date? {
-        return dateFormatter.date(from: apod.date)
+        return ApodDateFormatter.date(from: apod.date)
+    }
+
+    var yearMonth: Date? {
+        var dateComponents = DateComponents()
+        dateComponents.year = dateObj?.year
+        dateComponents.month = dateObj?.month
+        // day must be > 0 or it will revert a day, i.e. be last day of prior month
+        dateComponents.day = 1
+        dateComponents.hour = 1
+        dateComponents.minute = 1
+        let calendar = NSCalendar(identifier: .ISO8601)
+        calendar?.locale = Locale(identifier: "en_US_POSIX")
+        let title = calendar?.date(from: dateComponents)
+        print("APOD", apod.id, apod.date, String(describing: dateObj), String(describing: "title: \(title)"))
+        return title
     }
 
     var descriptionAttrString: NSAttributedString {

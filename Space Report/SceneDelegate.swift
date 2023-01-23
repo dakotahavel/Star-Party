@@ -18,12 +18,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 //        let managedObjectContext = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
+        setupGlobalStyles()
+
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
-        window?.rootViewController = UINavigationController(rootViewController: ApodsGridViewController())
+        window?.rootViewController = UINavigationController(rootViewController: TodaysApodViewController())
+//        window?.rootViewController = UINavigationController(rootViewController: ApodsGridViewController())
+//        window?.rootViewController = ApodsGridViewController()
+
         window?.rootViewController?.view.backgroundColor = .systemBackground
         window?.makeKeyAndVisible()
+    }
+
+    func setupGlobalStyles() {
+        UINavigationBar.appearance().tintColor = .label
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

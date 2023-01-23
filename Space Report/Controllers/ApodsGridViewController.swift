@@ -17,17 +17,16 @@ struct ApodSection {
 
 // MARK: - ApodsGridViewController
 
-class ApodsGridViewController: UICollectionViewController {
+class ApodsGridViewController: UICollectionViewController, ApodFiltersDelegate {
     var sections = [ApodSection]() {
         didSet {
-            print("did set")
             collectionView.reloadData()
         }
     }
 
-//    init(sections: [ApodSection]) {
+    // MARK: - Lifecycle
+
     init() {
-//        self.sections = sections
         let compositionalLayout: UICollectionViewCompositionalLayout = {
             let fraction: CGFloat = 1 / 3
 
@@ -55,28 +54,185 @@ class ApodsGridViewController: UICollectionViewController {
         collectionView.register(ApodImageCell.self, forCellWithReuseIdentifier: ApodImageCell.reuseId)
         collectionView.register(ApodHeaderCell.self, forSupplementaryViewOfKind: ApodHeaderCell.supplementaryKind, withReuseIdentifier: ApodHeaderCell.reuseId)
 
-        fetchApods()
+        fetchApods(query: .random(count: 30))
+
+        configureFilterButton()
+
+        view.addSubview(loadingView)
+        loadingView.fillView(view)
+        loadingView.layer.zPosition = 1000
+
+        filtersView.filtersDelegate = self
     }
 
-    func fetchApods() {
-        let apods = NasaAPI.shared.fakeRandomApods()
+    func handleSetFilter(_ filter: ApodFilter) {
+        switch filter {
+        case let .range(start_date: start_date, end_date: end_date):
+            let start = ApodDateFormatter.string(from: start_date)
+            let end = ApodDateFormatter.string(from: end_date)
+            fetchApods(query: .range(start_date: start, end_date: end))
+        case let .random(count: count):
+            print("handleSetFilter random", count)
+        case let .date(date: date):
+            let day = ApodDateFormatter.string(from: date)
+            fetchApods(query: .range(start_date: day, end_date: day))
+        }
+    }
 
-        var yearsMap: [Int: [ApodViewModel]] = .init()
-        for apod in apods {
-            let vm = ApodViewModel(apod: apod)
-            // skips apods where date wasn't able to parse
-            if let year = vm.dateObj?.year {
-                yearsMap[year, default: []].append(vm)
+    private let filtersView = ApodFiltersViewController()
+
+    private lazy var loadingView: UIView = {
+        let loading = UIView()
+        loading.roundCorners(radius: 16)
+        loading.clipsToBounds = true
+        let backgroundImage = UIImageView(image: UIImage(systemName: "aqi.medium")!)
+        let possibleColors: [UIColor] = [.orange, .red, .yellow, .blue, .cyan, .green]
+        backgroundImage.tintColor = possibleColors.randomElement()
+//        let pattern = UIColor(patternImage: backgroundImage)
+//        loading.backgroundColor = pattern
+        loading.addSubview(backgroundImage)
+        backgroundImage.fillView(loading, safe: false)
+
+        let blurEffect = UIBlurEffect(style: .systemUltraThinMaterial)
+        let blurView = UIVisualEffectView(effect: blurEffect)
+
+        loading.addSubview(blurView)
+        blurView.fillView(loading)
+
+        let spinner = UIActivityIndicatorView(style: .large)
+        spinner.transform = CGAffineTransform(scaleX: 3.0, y: 3.0)
+        loading.addSubview(spinner)
+        spinner.center(inView: loading)
+        spinner.startAnimating()
+
+        return loading
+    }()
+
+    func configureFilterButton() {
+        let filterButton = UIButton(type: .custom)
+        let size = view.frame.width / 8
+        filterButton.setDimensions(width: size, height: size)
+        filterButton.layer.cornerRadius = 0.5 * size
+        filterButton.clipsToBounds = true
+        filterButton.tintColor = .white
+        filterButton.backgroundColor = .nasa.secondaryRed
+
+        filterButton.addTarget(self, action: #selector(showFilters), for: .touchUpInside)
+        filterButton.setImage(UIImage(systemName: "line.3.horizontal.decrease"), for: .normal)
+        view.addSubview(filterButton)
+        let padding = view.frame.width / 16
+
+        filterButton.anchor(top: view.safeAreaLayoutGuide.topAnchor, right: view.rightAnchor, paddingTop: padding / 2, paddingRight: padding)
+    }
+
+    @objc func showFilters() {
+        present(filtersView, animated: true)
+    }
+
+    // MARK: - API
+
+    private var isLoading = true {
+        didSet {
+            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut) { [weak self] in
+                if let self {
+                    self.loadingView.alpha = self.isLoading ? 1 : 0
+                }
             }
         }
-
-        let sortedApods = yearsMap.sortByKeys(.desc)
-        let apodSections = sortedApods.map { year, apodsArray in
-            ApodSection(title: "\(year)", items: apodsArray)
-        }
-        sections = apodSections
-//        print(sections)
     }
+
+    private var hasError = false {
+        didSet {
+            if hasError {
+                showErrorAlert()
+            }
+        }
+    }
+
+    func showErrorAlert() {
+        var alertMessage: String
+        var isUnknown = false
+        if let description = lastQuery?.queryDescription {
+            alertMessage = "Sometimes the NASA API fails, mostly for large date ranges.\nWould you like to retry the query for \n\(description)"
+        } else {
+            isUnknown = true
+            alertMessage = "Something unexpected went wrong"
+        }
+        let alert = UIAlertController(title: "Oops", message: alertMessage, preferredStyle: .alert)
+
+        if !isUnknown {
+            alert.addAction(UIAlertAction(title: NSLocalizedString("Retry?", comment: "Retry query action"), style: .default, handler: { _ in
+                self.retryLastQuery()
+            }))
+            alert.addAction(UIAlertAction(title: NSLocalizedString("Do Nothing", comment: "Do nothing action"), style: .cancel, handler: { _ in
+                print("did nothing")
+            }))
+        } else {
+            alert.addAction(UIAlertAction(title: NSLocalizedString("Okay...", comment: "Do nothing action"), style: .cancel, handler: { _ in
+                print("did nothing")
+            }))
+        }
+
+        present(alert, animated: true, completion: nil)
+    }
+
+    private var fetchApodsTask: Task<Void, Never>?
+    private var lastQuery: ApodQuery?
+
+    deinit {
+        fetchApodsTask?.cancel()
+    }
+
+    private func retryLastQuery() {
+        if let query = lastQuery {
+            fetchApods(query: query)
+        }
+    }
+
+    func fetchApods(query: ApodQuery) {
+        fetchApodsTask?.cancel()
+        isLoading = true
+        hasError = false
+        sections = []
+        lastQuery = query
+        fetchApodsTask = Task {
+            print(query)
+            if let apods = try? await NasaAPI.shared.fetchApodsData(query) {
+                var sectionMap: [Date: [ApodViewModel]] = .init()
+                for apod in apods {
+                    let vm = ApodViewModel(apod: apod)
+                    // skips apods where date wasn't able to parse
+                    if let yearMonth = vm.yearMonth {
+                        print(yearMonth)
+                        sectionMap[yearMonth, default: []].append(vm)
+                    } else {
+                        print("unexpected date format", vm.apod)
+                    }
+                }
+
+                let sortedApods = sectionMap.sortByKeys(.desc)
+
+                let apodSections = sortedApods.map { apodDate, apodsArray in
+                    print("mapped sections", apodDate)
+                    let year = apodDate.year
+                    let month = apodDate.month
+                    let monthName = DateFormatter().monthSymbols[month - 1]
+                    return ApodSection(title: "\(year) \(monthName)", items: apodsArray)
+                }
+
+                DispatchQueue.main.async { [weak self] in
+                    self?.sections = apodSections
+                }
+            } else {
+                print("fetch apods task failed")
+                self.hasError = true
+            }
+
+            self.isLoading = false
+        }
+    }
+
+    // MARK: - Helper
 
     func resolveSection(_ indexPath: IndexPath) -> ApodSection {
         return sections[indexPath.section]
@@ -125,14 +281,16 @@ class ApodsGridViewController: UICollectionViewController {
 
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let apodVM = resolveApodVM(indexPath)
-        let detailView = ApodDetailView(apodViewModel: apodVM)
-        let v = UIViewController()
-        v.view.addSubview(detailView)
-        detailView.fillView(v.view, safe: false)
-        v.modalPresentationStyle = .pageSheet
-        present(v, animated: true)
+        let detailView = ApodDetailViewController()
 
-//        navigationController?.pushViewController(v, animated: true)
+        // TODO: - This is a weird way to do it
+        // detail view needs work
+        // detail view should be able to load sd image then fetch hd and pop it in
+        // modal shouldn't have loading screen at all from here
+
+        detailView.modalPresentationStyle = .pageSheet
+        present(detailView, animated: true)
+        detailView.apodViewModel = apodVM
     }
 
     // MARK: - boilerplate
