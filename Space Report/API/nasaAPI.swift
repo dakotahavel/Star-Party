@@ -66,6 +66,7 @@ enum ApodQuery: APIRequest {
 
     case range(start_date: String, end_date: String)
     case random(count: Int)
+    case lastThreeMonths
     case date(date: String)
     case today
 
@@ -77,15 +78,22 @@ enum ApodQuery: APIRequest {
                 "end_date": end_date,
             ])
         case let .random(count: count):
-            return [
-                URLQueryItem(name: "count", value: String(count)),
-            ]
+            return [URLQueryItem(name: "count", value: String(count))]
         case let .date(date: date):
-            return [
-                URLQueryItem(name: "date", value: date),
-            ]
+            return [URLQueryItem(name: "date", value: date)]
         case .today:
             return []
+        case .lastThreeMonths:
+            let calendar = Calendar.current
+            let endDate = Date()
+            // current month is at 0 so -2 makes 3 months
+            let startMonth = calendar.date(byAdding: DateComponents(month: -2), to: endDate)!
+            let startDate = calendar.date(from: DateComponents(year: startMonth.year, month: startMonth.month, day: 1))!
+
+            return URLQueryItem.items(from: [
+                "start_date": ApodDateFormatter.string(from: startDate),
+                "end_date": ApodDateFormatter.string(from: endDate),
+            ])
         }
     }
 
@@ -98,7 +106,9 @@ enum ApodQuery: APIRequest {
         case let .date(date: date):
             return "the day \(date)"
         case .today:
-            return "For Today's APOD"
+            return "today's APOD"
+        case .lastThreeMonths:
+            return "last three months"
         }
     }
 }
@@ -109,7 +119,10 @@ class NasaAPI {
     static let shared = NasaAPI()
     private lazy var session: URLSession = {
         let config = URLSessionConfiguration.default
-        config.requestCachePolicy = .reloadIgnoringLocalCacheData
+        // need to up amount so images can all be fetched simultaneously
+        config.httpMaximumConnectionsPerHost = 30
+//        config.requestCachePolicy = .reloadIgnoringLocalCacheData
+
         return URLSession(
             configuration: config
         )
@@ -210,6 +223,7 @@ class NasaAPI {
         if let imageUrl = resolveApodImageURL(apod, quality: quality) {
             let urlRequest = URLRequest(url: imageUrl)
             let task = session.dataTask(with: urlRequest, completionHandler: completion)
+
             task.resume()
             return task
         }

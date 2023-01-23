@@ -11,7 +11,8 @@ import UIKit
 class ApodImageCell: UICollectionViewCell {
     static let reuseId = "ApodImageCell"
 
-    var imageFetch: URLSessionDataTask?
+    var imageFetchTask: URLSessionDataTask?
+    var imageSetTask: Task<Void, Never>?
     var imageView: UIImageView? = .configured { iv in
         iv.contentMode = .scaleAspectFill
         iv.clipsToBounds = true
@@ -45,43 +46,36 @@ class ApodImageCell: UICollectionViewCell {
     }
 
     func configureCell() {
-        cleanCell()
+        if let previousTask = imageFetchTask {
+            previousTask.cancel()
+        }
+
         guard let apodViewModel else {
             noViewModelFallback()
             return
         }
 
-        loadingImageFallback()
+        configureLoadingUI()
 
-        if let previousTask = imageFetch {
-            previousTask.cancel()
-        }
-
-        imageFetch = NasaAPI.shared.fetchApodImageDataTask(apodViewModel.apod, quality: .standard, completion: { [weak self] data, resp, error in
+        imageFetchTask = NasaAPI.shared.fetchApodImageDataTask(apodViewModel.apod, quality: .standard, completion: { [weak self] data, resp, error in
             if error != nil || !hasGoodResponseCode(resp) {
 //                print(String(describing: error), String(describing: resp))
-                self?.noImageDataFallback()
+//                self?.noImageDataFallback()
                 return
             }
 
             if let data {
                 DispatchQueue.main.async {
                     self?.imageView?.image = UIImage(data: data)
+                    self?.label.text = nil
+                    self?.loader.isHidden = true
+                    self?.loader.stopAnimating()
                 }
             } else {
                 self?.noImageDataFallback()
             }
 
         })
-    }
-
-    func cleanCell() {
-        DispatchQueue.main.async { [weak self] in
-            self?.imageView?.image = nil
-            self?.label.text = nil
-            self?.loader.isHidden = true
-            self?.loader.stopAnimating()
-        }
     }
 
     func noViewModelFallback() {
@@ -91,11 +85,12 @@ class ApodImageCell: UICollectionViewCell {
         }
     }
 
-    func loadingImageFallback() {
+    func configureLoadingUI() {
         DispatchQueue.main.async { [weak self] in
+            self?.imageView?.image = nil
             self?.loader.isHidden = false
             self?.loader.startAnimating()
-            self?.noImageDataFallback()
+            self?.label.text = self?.apodViewModel?.apod.date
         }
     }
 
@@ -104,8 +99,9 @@ class ApodImageCell: UICollectionViewCell {
             noViewModelFallback()
             return
         }
+//        print("no image data", apodViewModel.apod.date, apodViewModel.apod.title)
         DispatchQueue.main.async { [weak self] in
-            print("no image data", apodViewModel.apod.date, apodViewModel.apod.title)
+
             self?.label.text = apodViewModel.apod.date
         }
     }

@@ -99,17 +99,33 @@ class ApodDetailViewController: UIViewController {
         }
     }
 
+    var fetchImageTask: Task<Void, Never>?
+
     private func configureWithData() {
+        // alot of this is set up to handle where the view model already has data
+        // this isn't happening at the moment though b/c the cell that gets the sd image can't update the vm struct
+        // nor can this view persist the hd image to the model
+
         // check for high res image first
         var data = apodViewModel?.apod.hdImageData
         // then sd image
+
+        var notHD = false
         if data == nil {
             data = apodViewModel?.apod.sdImageData
+            // try to get better image
+            notHD = true
         }
+
         // if neither, try to get the best available and then load
         guard let data else {
             fetchApodImage()
             return
+        }
+
+        if !notHD, fetchImageTask == nil {
+            // if has sd image, try to get hd
+            fetchApodImage()
         }
 
         UIView.transition(with: heroImageView, duration: 0.6, options: .transitionCrossDissolve) { [self] in
@@ -129,11 +145,13 @@ class ApodDetailViewController: UIViewController {
         if apodViewModel?.apod == nil {
             return
         }
-
-        Task {
+        if let previousTask = fetchImageTask {
+            previousTask.cancel()
+        }
+        fetchImageTask = Task {
             if let data = try? await NasaAPI.shared.fetchApodImageData(apodViewModel!.apod, quality: .best) {
                 DispatchQueue.main.async {
-                    self.apodViewModel?.apod.sdImageData = data
+                    self.apodViewModel?.apod.hdImageData = data
                 }
             }
         }

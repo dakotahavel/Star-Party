@@ -48,11 +48,8 @@ class ApodFiltersViewController: UIViewController {
     private lazy var startDatePicker: UIDatePicker = {
         let dp = UIDatePicker()
         dp.datePickerMode = .date
-        // June 16, 1995 -> "yyyy-MM-dd"
-        let oldestApod = "1995-06-16"
-        let minDate = ApodDateFormatter.date(from: oldestApod)
 
-        dp.minimumDate = minDate
+        dp.minimumDate = oldestApodDate
         dp.maximumDate = Date()
         dp.preferredDatePickerStyle = .wheels
         dp.addTarget(self, action: #selector(handleStartDateChange), for: .valueChanged)

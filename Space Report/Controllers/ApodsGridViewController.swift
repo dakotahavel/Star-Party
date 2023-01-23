@@ -21,6 +21,7 @@ class ApodsGridViewController: UICollectionViewController, ApodFiltersDelegate {
     var sections = [ApodSection]() {
         didSet {
             collectionView.reloadData()
+            collectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
         }
     }
 
@@ -28,7 +29,7 @@ class ApodsGridViewController: UICollectionViewController, ApodFiltersDelegate {
 
     init() {
         let compositionalLayout: UICollectionViewCompositionalLayout = {
-            let fraction: CGFloat = 1 / 3
+            let fraction: CGFloat = 1 / 2
 
             let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(fraction), heightDimension: .fractionalHeight(1))
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
@@ -54,12 +55,13 @@ class ApodsGridViewController: UICollectionViewController, ApodFiltersDelegate {
         collectionView.register(ApodImageCell.self, forCellWithReuseIdentifier: ApodImageCell.reuseId)
         collectionView.register(ApodHeaderCell.self, forSupplementaryViewOfKind: ApodHeaderCell.supplementaryKind, withReuseIdentifier: ApodHeaderCell.reuseId)
 
-        fetchApods(query: .random(count: 30))
+//        fetchApods(query: .random(count: 30))
+        fetchApods(query: .lastThreeMonths)
 
         configureFilterButton()
 
         view.addSubview(loadingView)
-        loadingView.fillView(view)
+        loadingView.fillView(view, safe: false)
         loadingView.layer.zPosition = 1000
 
         filtersView.filtersDelegate = self
@@ -83,21 +85,21 @@ class ApodsGridViewController: UICollectionViewController, ApodFiltersDelegate {
 
     private lazy var loadingView: UIView = {
         let loading = UIView()
-        loading.roundCorners(radius: 16)
-        loading.clipsToBounds = true
-        let backgroundImage = UIImageView(image: UIImage(systemName: "aqi.medium")!)
-        let possibleColors: [UIColor] = [.orange, .red, .yellow, .blue, .cyan, .green]
-        backgroundImage.tintColor = possibleColors.randomElement()
+        loading.backgroundColor = .systemBackground.withAlphaComponent(0.5)
+
+//        let backgroundImage = UIImageView(image: UIImage(systemName: "aqi.medium")!)
+//        let possibleColors: [UIColor] = [.orange, .red, .yellow, .blue, .cyan, .green]
+//        backgroundImage.tintColor = possibleColors.randomElement()
 //        let pattern = UIColor(patternImage: backgroundImage)
 //        loading.backgroundColor = pattern
-        loading.addSubview(backgroundImage)
-        backgroundImage.fillView(loading, safe: false)
+//        loading.addSubview(backgroundImage)
+//        backgroundImage.fillView(loading, safe: false)
 
-        let blurEffect = UIBlurEffect(style: .systemUltraThinMaterial)
-        let blurView = UIVisualEffectView(effect: blurEffect)
+//        let blurEffect = UIBlurEffect(style: .systemUltraThinMaterial)
+//        let blurView = UIVisualEffectView(effect: blurEffect)
 
-        loading.addSubview(blurView)
-        blurView.fillView(loading)
+//        loading.addSubview(blurView)
+//        blurView.fillView(loading)
 
         let spinner = UIActivityIndicatorView(style: .large)
         spinner.transform = CGAffineTransform(scaleX: 3.0, y: 3.0)
@@ -161,7 +163,7 @@ class ApodsGridViewController: UICollectionViewController, ApodFiltersDelegate {
         let alert = UIAlertController(title: "Oops", message: alertMessage, preferredStyle: .alert)
 
         if !isUnknown {
-            alert.addAction(UIAlertAction(title: NSLocalizedString("Retry?", comment: "Retry query action"), style: .default, handler: { _ in
+            alert.addAction(UIAlertAction(title: NSLocalizedString("Retry", comment: "Retry query action"), style: .default, handler: { _ in
                 self.retryLastQuery()
             }))
             alert.addAction(UIAlertAction(title: NSLocalizedString("Do Nothing", comment: "Do nothing action"), style: .cancel, handler: { _ in
@@ -193,7 +195,6 @@ class ApodsGridViewController: UICollectionViewController, ApodFiltersDelegate {
         fetchApodsTask?.cancel()
         isLoading = true
         hasError = false
-        sections = []
         lastQuery = query
         fetchApodsTask = Task {
             print(query)

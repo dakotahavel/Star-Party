@@ -16,6 +16,8 @@ let ApodDateFormatter: DateFormatter = {
     return df
 }()
 
+public let oldestApodDate = ApodDateFormatter.date(from: "1995-06-16")
+
 // MARK: - ApodViewModel
 
 struct ApodViewModel {
