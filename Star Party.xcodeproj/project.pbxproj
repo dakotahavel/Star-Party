@@ -57,16 +57,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		6539A4DD2969FD8500470F80 /* Space Report.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Space Report.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6539A4DD2969FD8500470F80 /* Star Party.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Star Party.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6539A4E02969FD8500470F80 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6539A4E22969FD8500470F80 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		6539A4EA2969FD8500470F80 /* Space_Report.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Space_Report.xcdatamodel; sourceTree = "<group>"; };
 		6539A4EC2969FD8600470F80 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6539A4EF2969FD8600470F80 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6539A4F12969FD8600470F80 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		6539A4F62969FD8600470F80 /* Space ReportTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Space ReportTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6539A4F62969FD8600470F80 /* Star PartyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Star PartyTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6539A4FA2969FD8600470F80 /* Space_ReportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Space_ReportTests.swift; sourceTree = "<group>"; };
-		6539A5002969FD8600470F80 /* Space ReportUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Space ReportUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6539A5002969FD8600470F80 /* Star PartyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Star PartyUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6539A5042969FD8600470F80 /* Space_ReportUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Space_ReportUITests.swift; sourceTree = "<group>"; };
 		6539A5062969FD8600470F80 /* Space_ReportUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Space_ReportUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		6539A514296A0B3C00470F80 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
@@ -122,9 +122,9 @@
 			isa = PBXGroup;
 			children = (
 				6539A519296A123800470F80 /* _Secrets */,
-				6539A4DF2969FD8500470F80 /* Space Report */,
-				6539A4F92969FD8600470F80 /* Space ReportTests */,
-				6539A5032969FD8600470F80 /* Space ReportUITests */,
+				6539A4DF2969FD8500470F80 /* Star Party */,
+				6539A4F92969FD8600470F80 /* Star PartyTests */,
+				6539A5032969FD8600470F80 /* Star PartyUITests */,
 				6539A4DE2969FD8500470F80 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -132,14 +132,14 @@
 		6539A4DE2969FD8500470F80 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				6539A4DD2969FD8500470F80 /* Space Report.app */,
-				6539A4F62969FD8600470F80 /* Space ReportTests.xctest */,
-				6539A5002969FD8600470F80 /* Space ReportUITests.xctest */,
+				6539A4DD2969FD8500470F80 /* Star Party.app */,
+				6539A4F62969FD8600470F80 /* Star PartyTests.xctest */,
+				6539A5002969FD8600470F80 /* Star PartyUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		6539A4DF2969FD8500470F80 /* Space Report */ = {
+		6539A4DF2969FD8500470F80 /* Star Party */ = {
 			isa = PBXGroup;
 			children = (
 				65634E6A2972691C00A13D45 /* Utils */,
@@ -157,24 +157,24 @@
 				6539A4F12969FD8600470F80 /* Info.plist */,
 				6539A4E92969FD8500470F80 /* Space_Report.xcdatamodeld */,
 			);
-			path = "Space Report";
+			path = "Star Party";
 			sourceTree = "<group>";
 		};
-		6539A4F92969FD8600470F80 /* Space ReportTests */ = {
+		6539A4F92969FD8600470F80 /* Star PartyTests */ = {
 			isa = PBXGroup;
 			children = (
 				6539A4FA2969FD8600470F80 /* Space_ReportTests.swift */,
 			);
-			path = "Space ReportTests";
+			path = "Star PartyTests";
 			sourceTree = "<group>";
 		};
-		6539A5032969FD8600470F80 /* Space ReportUITests */ = {
+		6539A5032969FD8600470F80 /* Star PartyUITests */ = {
 			isa = PBXGroup;
 			children = (
 				6539A5042969FD8600470F80 /* Space_ReportUITests.swift */,
 				6539A5062969FD8600470F80 /* Space_ReportUITestsLaunchTests.swift */,
 			);
-			path = "Space ReportUITests";
+			path = "Star PartyUITests";
 			sourceTree = "<group>";
 		};
 		6539A513296A0B1F00470F80 /* Common */ = {
@@ -273,9 +273,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		6539A4DC2969FD8500470F80 /* Space Report */ = {
+		6539A4DC2969FD8500470F80 /* Star Party */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 6539A50A2969FD8600470F80 /* Build configuration list for PBXNativeTarget "Space Report" */;
+			buildConfigurationList = 6539A50A2969FD8600470F80 /* Build configuration list for PBXNativeTarget "Star Party" */;
 			buildPhases = (
 				6539A4D92969FD8500470F80 /* Sources */,
 				6539A4DA2969FD8500470F80 /* Frameworks */,
@@ -285,14 +285,14 @@
 			);
 			dependencies = (
 			);
-			name = "Space Report";
+			name = "Star Party";
 			productName = "Space Report";
-			productReference = 6539A4DD2969FD8500470F80 /* Space Report.app */;
+			productReference = 6539A4DD2969FD8500470F80 /* Star Party.app */;
 			productType = "com.apple.product-type.application";
 		};
-		6539A4F52969FD8600470F80 /* Space ReportTests */ = {
+		6539A4F52969FD8600470F80 /* Star PartyTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 6539A50D2969FD8600470F80 /* Build configuration list for PBXNativeTarget "Space ReportTests" */;
+			buildConfigurationList = 6539A50D2969FD8600470F80 /* Build configuration list for PBXNativeTarget "Star PartyTests" */;
 			buildPhases = (
 				6539A4F22969FD8600470F80 /* Sources */,
 				6539A4F32969FD8600470F80 /* Frameworks */,
@@ -303,14 +303,14 @@
 			dependencies = (
 				6539A4F82969FD8600470F80 /* PBXTargetDependency */,
 			);
-			name = "Space ReportTests";
+			name = "Star PartyTests";
 			productName = "Space ReportTests";
-			productReference = 6539A4F62969FD8600470F80 /* Space ReportTests.xctest */;
+			productReference = 6539A4F62969FD8600470F80 /* Star PartyTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		6539A4FF2969FD8600470F80 /* Space ReportUITests */ = {
+		6539A4FF2969FD8600470F80 /* Star PartyUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 6539A5102969FD8600470F80 /* Build configuration list for PBXNativeTarget "Space ReportUITests" */;
+			buildConfigurationList = 6539A5102969FD8600470F80 /* Build configuration list for PBXNativeTarget "Star PartyUITests" */;
 			buildPhases = (
 				6539A4FC2969FD8600470F80 /* Sources */,
 				6539A4FD2969FD8600470F80 /* Frameworks */,
@@ -321,9 +321,9 @@
 			dependencies = (
 				6539A5022969FD8600470F80 /* PBXTargetDependency */,
 			);
-			name = "Space ReportUITests";
+			name = "Star PartyUITests";
 			productName = "Space ReportUITests";
-			productReference = 6539A5002969FD8600470F80 /* Space ReportUITests.xctest */;
+			productReference = 6539A5002969FD8600470F80 /* Star PartyUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -362,9 +362,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				6539A4DC2969FD8500470F80 /* Space Report */,
-				6539A4F52969FD8600470F80 /* Space ReportTests */,
-				6539A4FF2969FD8600470F80 /* Space ReportUITests */,
+				6539A4DC2969FD8500470F80 /* Star Party */,
+				6539A4F52969FD8600470F80 /* Star PartyTests */,
+				6539A4FF2969FD8600470F80 /* Star PartyUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -450,12 +450,12 @@
 /* Begin PBXTargetDependency section */
 		6539A4F82969FD8600470F80 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 6539A4DC2969FD8500470F80 /* Space Report */;
+			target = 6539A4DC2969FD8500470F80 /* Star Party */;
 			targetProxy = 6539A4F72969FD8600470F80 /* PBXContainerItemProxy */;
 		};
 		6539A5022969FD8600470F80 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 6539A4DC2969FD8500470F80 /* Space Report */;
+			target = 6539A4DC2969FD8500470F80 /* Star Party */;
 			targetProxy = 6539A5012969FD8600470F80 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -668,7 +668,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Space Report.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Space Report";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Star Party.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Star Party";
 			};
 			name = Debug;
 		};
@@ -688,7 +688,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Space Report.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Space Report";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Star Party.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Star Party";
 			};
 			name = Release;
 		};
@@ -740,7 +740,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6539A50A2969FD8600470F80 /* Build configuration list for PBXNativeTarget "Space Report" */ = {
+		6539A50A2969FD8600470F80 /* Build configuration list for PBXNativeTarget "Star Party" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6539A50B2969FD8600470F80 /* Debug */,
@@ -749,7 +749,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6539A50D2969FD8600470F80 /* Build configuration list for PBXNativeTarget "Space ReportTests" */ = {
+		6539A50D2969FD8600470F80 /* Build configuration list for PBXNativeTarget "Star PartyTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6539A50E2969FD8600470F80 /* Debug */,
@@ -758,7 +758,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6539A5102969FD8600470F80 /* Build configuration list for PBXNativeTarget "Space ReportUITests" */ = {
+		6539A5102969FD8600470F80 /* Build configuration list for PBXNativeTarget "Star PartyUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6539A5112969FD8600470F80 /* Debug */,
