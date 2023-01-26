@@ -5,7 +5,7 @@
 //  Created by Dakota Havel on 1/18/23.
 //
 
-import Foundation
+import SwiftUI
 import UIKit
 
 // MARK: - ApodSection
@@ -25,6 +25,14 @@ class ApodsGridViewController: UICollectionViewController, ApodFiltersDelegate {
         }
     }
 
+    private var didInitWithSections: Bool = false
+
+    convenience init(sections: [ApodSection]) {
+        self.init()
+        self.sections = sections
+        self.didInitWithSections = true
+    }
+
     // MARK: - Lifecycle
 
     init() {
@@ -39,8 +47,9 @@ class ApodsGridViewController: UICollectionViewController, ApodFiltersDelegate {
 
             let section = NSCollectionLayoutSection(group: group)
 
-            let headerItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(fraction / 10))
-            let headerItem = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerItemSize, elementKind: ApodHeaderCell.supplementaryKind, alignment: .top)
+            let headerItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(0))
+
+            let headerItem = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerItemSize, elementKind: ApodHeaderCell.supplementaryKind, alignment: .topLeading)
             headerItem.pinToVisibleBounds = true
             section.boundarySupplementaryItems = [headerItem]
 
@@ -55,16 +64,16 @@ class ApodsGridViewController: UICollectionViewController, ApodFiltersDelegate {
         collectionView.register(ApodImageCell.self, forCellWithReuseIdentifier: ApodImageCell.reuseId)
         collectionView.register(ApodHeaderCell.self, forSupplementaryViewOfKind: ApodHeaderCell.supplementaryKind, withReuseIdentifier: ApodHeaderCell.reuseId)
 
-//        fetchApods(query: .random(count: 30))
-        fetchApods(query: .lastThreeMonths)
+        filtersView.filtersDelegate = self
 
         configureFilterButton()
 
-        view.addSubview(loadingView)
-        loadingView.fillView(view, safe: false)
-        loadingView.layer.zPosition = 1000
-
-        filtersView.filtersDelegate = self
+        if !didInitWithSections {
+            fetchApods(query: .lastThreeMonths)
+            view.addSubview(loadingView)
+            loadingView.fillView(view, safe: false)
+            loadingView.layer.zPosition = 1000
+        }
     }
 
     func handleSetFilter(_ filter: ApodFilter) {
@@ -299,5 +308,45 @@ class ApodsGridViewController: UICollectionViewController, ApodFiltersDelegate {
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+// MARK: - ApodsGridViewControllerRepresentation
+
+struct ApodsGridViewControllerRepresentation: UIViewControllerRepresentable {
+    let sampleSections = [
+        ApodSection(
+            title: "2023 January",
+            items:
+            (11..<22).map { i in
+                ApodViewModel(apod: APOD(copyright: "C", date: "2023-01-\(i)", explanation: "", hdurl: nil, media_type: "", service_version: "", title: "\(i)", url: ""))
+            }
+
+        ),
+        ApodSection(
+            title: "2022 December",
+            items:
+            (11..<22).map { i in
+                ApodViewModel(apod: APOD(copyright: "C", date: "2022-12-\(i)", explanation: "", hdurl: nil, media_type: "", service_version: "", title: "\(i)", url: ""))
+            }
+
+        ),
+    ]
+
+    func makeUIViewController(context: Context) -> ApodsGridViewController {
+        return ApodsGridViewController(sections: sampleSections)
+    }
+
+    func updateUIViewController(_ uiViewController: ApodsGridViewController, context: Context) {
+    }
+
+    typealias UIViewControllerType = ApodsGridViewController
+}
+
+// MARK: - ApodsGridViewController_Preview
+
+struct ApodsGridViewController_Preview: PreviewProvider {
+    static var previews: some View {
+        ApodsGridViewControllerRepresentation().ignoresSafeArea()
     }
 }

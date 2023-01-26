@@ -63,6 +63,7 @@ class ApodFiltersViewController: UIViewController {
     private lazy var startDateGroup: UIView = .configured { vu in
         vu.addSubview(startDateLabel)
         startDateLabel.fillHorizontal(vu)
+        startDateLabel.textAlignment = .center
         startDateLabel.anchor(top: vu.topAnchor)
 
         vu.addSubview(startDatePicker)
@@ -99,6 +100,7 @@ class ApodFiltersViewController: UIViewController {
     private lazy var endDateGroup: UIView = .configured { vu in
         vu.addSubview(endDateLabel)
         endDateLabel.fillHorizontal(vu)
+        endDateLabel.textAlignment = .center
         endDateLabel.anchor(top: vu.topAnchor)
 
         vu.addSubview(endDateCheckbox)
