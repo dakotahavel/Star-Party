@@ -595,7 +595,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 627A94M9D3;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Space Report/Info.plist";
+				INFOPLIST_FILE = "Star Party/Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.news";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
@@ -628,7 +628,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 627A94M9D3;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Space Report/Info.plist";
+				INFOPLIST_FILE = "Star Party/Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.news";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
