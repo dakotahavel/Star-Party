@@ -5,6 +5,7 @@
 //  Created by Dakota Havel on 1/13/23.
 //
 
+import SwiftUI
 import UIKit
 
 // MARK: - Initable
@@ -20,6 +21,8 @@ enum axes {
     case vertical
     case both
 }
+
+// MARK: - UIButton
 
 extension UIButton {
     class func configured(type buttonType: UIButton.ButtonType, closure: (UIButton) -> Void) -> UIButton {
@@ -40,6 +43,8 @@ extension UIButton {
     }
 }
 
+// MARK: - UIStackView
+
 extension UIStackView {
     class func configured(arrangedSubviews: [UIView], axis: NSLayoutConstraint.Axis, _ closure: (UIStackView) -> Void) -> UIStackView {
         let i = UIStackView(arrangedSubviews: arrangedSubviews)
@@ -48,6 +53,8 @@ extension UIStackView {
         return i
     }
 }
+
+// MARK: - UIBarButtonItem
 
 extension UIBarButtonItem {
     class func configured(_ closure: (UIBarButtonItem) -> Void) -> UIBarButtonItem {
@@ -185,6 +192,21 @@ extension UIView: Initable {
 
     func fillVertical(_ view: UIView, safe: Bool = true) {
         fillView(view, axis: .vertical, safe: safe)
+    }
+}
+
+// MARK: - NavigationHostable
+
+protocol NavigationHostable {
+    var navigationHost: UINavigationController? { get set }
+}
+
+// MARK: - UINavigationController
+
+extension UINavigationController {
+    convenience init<Content>(hostingViewController: UIHostingController<Content>) where Content: View, Content: NavigationHostable {
+        self.init(rootViewController: hostingViewController)
+        hostingViewController.rootView.navigationHost = self
     }
 }
 

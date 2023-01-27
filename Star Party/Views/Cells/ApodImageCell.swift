@@ -28,7 +28,7 @@ class ApodImageCell: UICollectionViewCell {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .random.withAlphaComponent(0.5)
+        backgroundColor = .systemBackground
 
         addSubview(label)
         label.center(inView: self)
@@ -57,8 +57,8 @@ class ApodImageCell: UICollectionViewCell {
 
         configureLoadingUI()
 
-        imageFetchTask = NasaAPI.shared.fetchApodImageDataTask(apodViewModel.apod, quality: .standard, completion: { [weak self] data, resp, error in
-            if error != nil || !hasGoodResponseCode(resp) {
+        imageFetchTask = NASA_API.shared.fetchApodImageDataTask(apodViewModel.apod, quality: .standard, completion: { [weak self] data, resp, error in
+            if error != nil || !Requests.hasGoodResponseCode(resp) {
 //                print(String(describing: error), String(describing: resp))
 //                self?.noImageDataFallback()
                 return

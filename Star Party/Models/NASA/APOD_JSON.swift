@@ -1,5 +1,5 @@
 //
-//  APOD.swift
+//  APOD_JSON.swift
 //  Space Report
 //
 //  Created by Dakota Havel on 1/7/23.
@@ -19,9 +19,9 @@ import Foundation
 //    url: "https://apod.nasa.gov/apod/image/2301/ISS_TIANHE_FINAL_4_APOD1024.jpg"
 // }
 
-// MARK: - APOD
+// MARK: - APOD_JSON
 
-struct APOD: Codable, Identifiable {
+struct APOD_JSON: Decodable, Identifiable {
     // Should be one per day so date is the unique ID
     var id: String {
         date

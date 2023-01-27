@@ -26,8 +26,8 @@ class ApodsGridViewController: UICollectionViewController, ApodFiltersDelegate {
     }
 
     private var didInitWithSections: Bool = false
-
     convenience init(sections: [ApodSection]) {
+        // for preview and testing
         self.init()
         self.sections = sections
         self.didInitWithSections = true
@@ -36,8 +36,8 @@ class ApodsGridViewController: UICollectionViewController, ApodFiltersDelegate {
     // MARK: - Lifecycle
 
     init() {
-        let compositionalLayout: UICollectionViewCompositionalLayout = {
-            let fraction: CGFloat = 1 / 2
+        let compositionalLayout = {
+            let fraction: CGFloat = 1.0
 
             let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(fraction), heightDimension: .fractionalHeight(1))
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
@@ -47,7 +47,7 @@ class ApodsGridViewController: UICollectionViewController, ApodFiltersDelegate {
 
             let section = NSCollectionLayoutSection(group: group)
 
-            let headerItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(0))
+            let headerItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(.leastNonzeroMagnitude))
 
             let headerItem = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerItemSize, elementKind: ApodHeaderCell.supplementaryKind, alignment: .topLeading)
             headerItem.pinToVisibleBounds = true
@@ -59,14 +59,13 @@ class ApodsGridViewController: UICollectionViewController, ApodFiltersDelegate {
     }
 
     override func viewDidLoad() {
-        view.backgroundColor = .purple
-
         collectionView.register(ApodImageCell.self, forCellWithReuseIdentifier: ApodImageCell.reuseId)
         collectionView.register(ApodHeaderCell.self, forSupplementaryViewOfKind: ApodHeaderCell.supplementaryKind, withReuseIdentifier: ApodHeaderCell.reuseId)
 
         filtersView.filtersDelegate = self
 
         configureFilterButton()
+        configureSettingsHeaderItem()
 
         if !didInitWithSections {
             fetchApods(query: .lastThreeMonths)
@@ -76,7 +75,7 @@ class ApodsGridViewController: UICollectionViewController, ApodFiltersDelegate {
         }
     }
 
-    func handleSetFilter(_ filter: ApodFilter) {
+    func didPressApplyFilter(_ filter: ApodFilter) {
         switch filter {
         case let .range(start_date: start_date, end_date: end_date):
             let start = ApodDateFormatter.string(from: start_date)
@@ -96,22 +95,8 @@ class ApodsGridViewController: UICollectionViewController, ApodFiltersDelegate {
         let loading = UIView()
         loading.backgroundColor = .systemBackground.withAlphaComponent(0.5)
 
-//        let backgroundImage = UIImageView(image: UIImage(systemName: "aqi.medium")!)
-//        let possibleColors: [UIColor] = [.orange, .red, .yellow, .blue, .cyan, .green]
-//        backgroundImage.tintColor = possibleColors.randomElement()
-//        let pattern = UIColor(patternImage: backgroundImage)
-//        loading.backgroundColor = pattern
-//        loading.addSubview(backgroundImage)
-//        backgroundImage.fillView(loading, safe: false)
-
-//        let blurEffect = UIBlurEffect(style: .systemUltraThinMaterial)
-//        let blurView = UIVisualEffectView(effect: blurEffect)
-
-//        loading.addSubview(blurView)
-//        blurView.fillView(loading)
-
         let spinner = UIActivityIndicatorView(style: .large)
-        spinner.transform = CGAffineTransform(scaleX: 3.0, y: 3.0)
+        spinner.transform = CGAffineTransform(scaleX: 2.0, y: 2.0)
         loading.addSubview(spinner)
         spinner.center(inView: loading)
         spinner.startAnimating()
@@ -128,7 +113,7 @@ class ApodsGridViewController: UICollectionViewController, ApodFiltersDelegate {
         filterButton.tintColor = .white
         filterButton.backgroundColor = .nasa.secondaryRed
 
-        filterButton.addTarget(self, action: #selector(showFilters), for: .touchUpInside)
+        filterButton.addTarget(self, action: #selector(didPressShowFilters), for: .touchUpInside)
         filterButton.setImage(UIImage(systemName: "line.3.horizontal.decrease"), for: .normal)
         view.addSubview(filterButton)
         let padding = view.frame.width / 16
@@ -136,8 +121,40 @@ class ApodsGridViewController: UICollectionViewController, ApodFiltersDelegate {
         filterButton.anchor(top: view.safeAreaLayoutGuide.topAnchor, right: view.rightAnchor, paddingTop: padding / 2, paddingRight: padding)
     }
 
-    @objc func showFilters() {
+    @objc func didPressShowFilters() {
         present(filtersView, animated: true)
+    }
+
+//    func changeLayout() {
+//        let layout = {
+//            let fraction: CGFloat = 1 / 2
+//
+//            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(fraction), heightDimension: .fractionalHeight(1))
+//            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+//
+//            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(fraction))
+//            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+//
+//            let section = NSCollectionLayoutSection(group: group)
+//
+//            let headerItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(.leastNonzeroMagnitude))
+//
+//            let headerItem = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerItemSize, elementKind: ApodHeaderCell.supplementaryKind, alignment: .topLeading)
+//            headerItem.pinToVisibleBounds = true
+//            section.boundarySupplementaryItems = [headerItem]
+//
+//            return UICollectionViewCompositionalLayout(section: section)
+//        }()
+//        collectionView.setCollectionViewLayout(layout, animated: true)
+//    }
+
+    func configureSettingsHeaderItem() {
+        let settingsNavBarItem = UIBarButtonItem(image: UIImage(systemName: "gear"), style: .plain, target: self, action: #selector(showSettings))
+        navigationItem.rightBarButtonItem = settingsNavBarItem
+    }
+
+    @objc func showSettings() {
+        present(SettingsView().asHosted(), animated: true)
     }
 
     // MARK: - API
@@ -207,7 +224,7 @@ class ApodsGridViewController: UICollectionViewController, ApodFiltersDelegate {
         lastQuery = query
         fetchApodsTask = Task {
             print(query)
-            if let apods = try? await NasaAPI.shared.fetchApodsData(query) {
+            if let apods = try? await NASA_API.shared.fetchApodsData(query) {
                 var sectionMap: [Date: [ApodViewModel]] = .init()
                 for apod in apods {
                     let vm = ApodViewModel(apod: apod)
@@ -319,7 +336,7 @@ struct ApodsGridViewControllerRepresentation: UIViewControllerRepresentable {
             title: "2023 January",
             items:
             (11..<22).map { i in
-                ApodViewModel(apod: APOD(copyright: "C", date: "2023-01-\(i)", explanation: "", hdurl: nil, media_type: "", service_version: "", title: "\(i)", url: ""))
+                ApodViewModel(apod: APOD_JSON(copyright: "C", date: "2023-01-\(i)", explanation: "", hdurl: nil, media_type: "", service_version: "", title: "\(i)", url: ""))
             }
 
         ),
@@ -327,7 +344,7 @@ struct ApodsGridViewControllerRepresentation: UIViewControllerRepresentable {
             title: "2022 December",
             items:
             (11..<22).map { i in
-                ApodViewModel(apod: APOD(copyright: "C", date: "2022-12-\(i)", explanation: "", hdurl: nil, media_type: "", service_version: "", title: "\(i)", url: ""))
+                ApodViewModel(apod: APOD_JSON(copyright: "C", date: "2022-12-\(i)", explanation: "", hdurl: nil, media_type: "", service_version: "", title: "\(i)", url: ""))
             }
 
         ),

@@ -9,14 +9,16 @@
         <attribute name="service_version" optional="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <attribute name="url" optional="YES" attributeType="String"/>
-        <relationship name="hdImage" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="APOD_hd_image" inverseName="apod" inverseEntity="APOD_hd_image"/>
-        <relationship name="image" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="APOD_image" inverseName="apod" inverseEntity="APOD_image"/>
+        <relationship name="hdImage" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="APOD_hd_image" inverseName="apod" inverseEntity="APOD_hd_image"/>
+        <relationship name="image" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="APOD_image" inverseName="apod" inverseEntity="APOD_image"/>
     </entity>
     <entity name="APOD_hd_image" representedClassName="APOD_hd_image" syncable="YES">
+        <attribute name="id" optional="YES" attributeType="String"/>
         <attribute name="imageData" optional="YES" attributeType="Binary"/>
         <relationship name="apod" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="APOD" inverseName="hdImage" inverseEntity="APOD"/>
     </entity>
     <entity name="APOD_image" representedClassName="APOD_image" syncable="YES">
+        <attribute name="id" optional="YES" attributeType="String"/>
         <attribute name="imageData" optional="YES" attributeType="Binary"/>
         <relationship name="apod" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="APOD" inverseName="image" inverseEntity="APOD"/>
     </entity>

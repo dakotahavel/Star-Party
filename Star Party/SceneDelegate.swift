@@ -16,19 +16,24 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
 
-//        let managedObjectContext = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-
         setupGlobalStyles()
 
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
-        window?.rootViewController = UINavigationController(rootViewController: TodaysApodViewController())
-//        window?.rootViewController = UINavigationController(rootViewController: ApodsGridViewController())
-//        window?.rootViewController = ApodsGridViewController()
+        resolveRootView()
 
         window?.rootViewController?.view.backgroundColor = .systemBackground
         window?.makeKeyAndVisible()
+    }
+
+    func resolveRootView() {
+        if UserSettingsManager.getSkipOnboarding() {
+            window?.rootViewController = UINavigationController(rootViewController: TodaysApodViewController())
+        } else {
+            let nav = UINavigationController(hostingViewController: OnboardingView().asHosted())
+            window?.rootViewController = nav
+        }
     }
 
     func setupGlobalStyles() {

@@ -149,7 +149,7 @@ class ApodDetailViewController: UIViewController {
             previousTask.cancel()
         }
         fetchImageTask = Task {
-            if let data = try? await NasaAPI.shared.fetchApodImageData(apodViewModel!.apod, quality: .best) {
+            if let data = try? await NASA_API.shared.fetchApodImageData(apodViewModel!.apod, quality: .best) {
                 DispatchQueue.main.async {
                     self.apodViewModel?.apod.hdImageData = data
                 }

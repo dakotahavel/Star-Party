@@ -15,6 +15,7 @@ extension UIColor {
         static let primaryBlueDarkest = UIColor(hex: 0x061F4A)
         static let secondaryRed = UIColor(hex: 0xDD361C)
         static let white: UIColor = .white
+        static let orange = UIColor(hex: 0xFF4F00)
     }
 
     enum spacex {

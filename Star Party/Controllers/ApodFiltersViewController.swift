@@ -19,7 +19,7 @@ enum ApodFilter {
 // MARK: - ApodFiltersDelegate
 
 protocol ApodFiltersDelegate: AnyObject {
-    func handleSetFilter(_ filter: ApodFilter)
+    func didPressApplyFilter(_ filter: ApodFilter)
 }
 
 // MARK: - ApodFiltersViewController
@@ -164,7 +164,7 @@ class ApodFiltersViewController: UIViewController {
         } else {
             filter = .date(date: startDatePicker.date)
         }
-        filtersDelegate?.handleSetFilter(filter)
+        filtersDelegate?.didPressApplyFilter(filter)
         dismiss(animated: true)
     }
 }

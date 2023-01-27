@@ -21,7 +21,7 @@ public let oldestApodDate = ApodDateFormatter.date(from: "1995-06-16")
 // MARK: - ApodViewModel
 
 struct ApodViewModel {
-    var apod: APOD
+    var apod: APOD_JSON
 
     var dateObj: Date? {
         return ApodDateFormatter.date(from: apod.date)
@@ -38,7 +38,7 @@ struct ApodViewModel {
         let calendar = NSCalendar(identifier: .ISO8601)
         calendar?.locale = Locale(identifier: "en_US_POSIX")
         let title = calendar?.date(from: dateComponents)
-        print("APOD", apod.id, apod.date, String(describing: dateObj), String(describing: "title: \(title)"))
+
         return title
     }
 
