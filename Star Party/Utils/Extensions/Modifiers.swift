@@ -7,8 +7,9 @@
 
 import SwiftUI
 
-struct TextFieldClearButton: ViewModifier {
+struct TextFieldResetButton: ViewModifier {
     @Binding var text: String
+    var defaultValue: String = ""
 
     func body(content: Content) -> some View {
         HStack {
@@ -16,10 +17,10 @@ struct TextFieldClearButton: ViewModifier {
 
             if !text.isEmpty {
                 Button(
-                    action: { self.text = "" },
+                    action: { self.text = defaultValue },
                     label: {
-                        Image(systemName: "delete.left")
-                            .foregroundColor(Color(UIColor.opaqueSeparator))
+                        Image(systemName: defaultValue.isEmpty ? "delete.left" : "arrow.counterclockwise.circle")
+                            .foregroundColor(Color(UIColor.label))
                     }
                 )
             }

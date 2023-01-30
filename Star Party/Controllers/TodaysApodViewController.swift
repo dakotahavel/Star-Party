@@ -5,6 +5,7 @@
 //  Created by Dakota Havel on 1/13/23.
 //
 
+import CoreData
 import Foundation
 import SwiftUI
 import UIKit
@@ -16,17 +17,30 @@ class TodaysApodViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        view.backgroundColor = .systemBackground
         fetchTodaysApodAndImage()
         configureLayout()
     }
 
     func fetchTodaysApodAndImage() {
         Task {
-            if let apod = try? await NASA_API.shared.fetchTodaysApod() {
-                DispatchQueue.main.async {
-                    self.apodDetailViewController.apodViewModel = ApodViewModel(apod: apod)
+            do {
+                let today = Date()
+                let todayString = ApodDateFormatter.string(from: today)
+                try await NASA_API.shared.fetchApodsData(.date(date: todayString))
+                let request = APOD.fetchRequest() as NSFetchRequest<APOD>
+                request.predicate = NSPredicate(format: "%K == %@", "dateString", todayString)
+
+                let apod = try APOD.context.fetch(request).first
+
+                if let found = apod {
+                    try await NASA_API.shared.fetchApodImageData(found, desiredQuality: .best)
+
+                    apodDetailViewController.apodViewModel = ApodViewModel(apod: found)
                 }
+
+            } catch {
+                print(error)
             }
         }
     }
@@ -39,7 +53,7 @@ class TodaysApodViewController: UIViewController {
     }()
 
     @objc func handleExplorePressed() {
-        navigationController?.pushViewController(ApodsGridViewController(), animated: true)
+        navigationController?.pushViewController(ImagesCollectionViewController(), animated: true)
     }
 
     func configureLayout() {

@@ -16,6 +16,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
 
+        _ = PersistenceManager(inMemory: false)
         setupGlobalStyles()
 
         guard let windowScene = (scene as? UIWindowScene) else { return }
@@ -29,7 +30,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func resolveRootView() {
         if UserSettingsManager.getSkipOnboarding() {
-            window?.rootViewController = UINavigationController(rootViewController: TodaysApodViewController())
+        window?.rootViewController = UINavigationController(rootViewController: TodaysApodViewController())
         } else {
             let nav = UINavigationController(hostingViewController: OnboardingView().asHosted())
             window?.rootViewController = nav

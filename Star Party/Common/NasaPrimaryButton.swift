@@ -30,7 +30,6 @@ class HighlightButton: UIButton {
             insertSubview(blurView, at: 0)
         }
 
-//        blurView.constrain(to: self)
         blurView.fillView(self, safe: false)
     }
 
@@ -74,7 +73,7 @@ class NasaPrimaryButton: UIButton {
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = traitCollection.userInterfaceStyle == .light ? .nasa.primaryBlue : .nasa.secondaryRed
-        titleLabel?.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        titleLabel?.font = UIFont.preferredFont(forTextStyle: .callout)
         tintColor = .white
         contentEdgeInsets = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
         roundCorners(radius: 6)
@@ -82,7 +81,7 @@ class NasaPrimaryButton: UIButton {
 
     override func setTitle(_ title: String?, for state: UIControl.State) {
         super.setTitle(title, for: state)
-        titleLabel?.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        titleLabel?.font = UIFont.preferredFont(forTextStyle: .callout)
     }
 
     @available(*, unavailable)

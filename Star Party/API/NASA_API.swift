@@ -10,10 +10,11 @@ import UIKit
 
 class NASA_API {
     static let shared = NASA_API()
+    typealias ApodImageDataTaskCompletion = (Data?, URLResponse?, (any Error)?, ApodActualImageQuality) -> Void
 
     private lazy var session: URLSession = {
         let config = URLSessionConfiguration.default
-        // need to up amount so images can all be fetched simultaneously
+        // need to up amount so more images can be fetched simultaneously
         config.httpMaximumConnectionsPerHost = 30
 
         // test heavy loading
@@ -30,7 +31,6 @@ class NASA_API {
         components.host = "api.nasa.gov"
         components.path = request.path
         let queryItems = request.makeQueryItems()
-        print("making route, key is", UserSettingsManager.getNasaApiKey())
         let apiKeyQueryItem = [URLQueryItem(name: "api_key", value: UserSettingsManager.getNasaApiKey())]
         components.queryItems = queryItems + apiKeyQueryItem
 
@@ -41,78 +41,67 @@ class NASA_API {
         return out
     }
 
-    func fetch<T: Decodable>(_ type: T.Type, from url: URL) async throws -> T {
+    private func fetch<T: Decodable>(_ type: T.Type, from url: URL) async throws -> T {
         return try await JSON.fetch(type, from: url, with: session)
     }
 
-    func fakeRandomApods() -> [APOD_JSON] {
-        let path = Bundle.main.url(forResource: "random", withExtension: "json")!
-
-        do {
-            let data = try Data(contentsOf: path)
-            let apods = try JSONDecoder().decode([APOD_JSON].self, from: data).filter { apod in
-                // some urls had vimeo or youtube links
-                apod.url.contains("apod.nasa.gov/apod")
-            }
-
-            return apods
-        } catch {
-            print(error)
-        }
-
-        return []
+    private func fetch<T: Decodable>(_ type: [T].Type, from url: URL) async throws -> [T] {
+        return try await JSON.fetch(type, from: url, with: session)
     }
 
-    func fetchApodsData(_ query: ApodQuery) async throws -> [APOD_JSON] {
+    func fetchApodsData(_ query: ApodQuery) async throws {
         let url = try makeRoute(query)
-        print("fetch apods data url", url)
+
         let kind = [APOD_JSON].self
+
         let res = try await fetch(kind, from: url)
-        return res.filter { apod in
+
+        let filtered = res.filter { apod in
             // some urls have vimeo or youtube links not handled yet
             apod.url.contains("apod.nasa.gov/apod")
         }
+        print("filtered len", filtered.count)
+        try APOD.saved(filtered)
     }
 
-    func fetchTodaysApod() async throws -> APOD_JSON {
-        let url = try makeRoute(ApodQuery.today)
-        let kind = APOD_JSON.self
-        var apod = try await fetch(kind, from: url)
-        let data = try await fetchApodImageData(apod, quality: .best)
-        apod.sdImageData = data
-        return apod
-    }
-
-    enum ApodImageQuality {
+    enum ApodDesiredImageQuality {
         case highDef
         case standard
         case best
     }
 
-    func resolveApodImageURL(_ apod: APOD_JSON, quality: ApodImageQuality = .best) -> URL? {
+    enum ApodActualImageQuality {
+        case highDef
+        case standard
+    }
+
+    func resolveApodImageURL(_ apod: APOD, quality: ApodDesiredImageQuality = .best) -> (URL?, ApodActualImageQuality) {
+        var out: (URL?, ApodActualImageQuality)
         switch quality {
         case .standard:
-            return resolveStandardApodImageURL(apod)
+            out = (resolveStandardApodImageURL(apod), .standard)
         case .highDef:
-            return resolveHighDefApodImageURL(apod)
+            out = (resolveHighDefApodImageURL(apod), .highDef)
         case .best:
             let high = resolveHighDefApodImageURL(apod)
             guard let high else {
-                return resolveStandardApodImageURL(apod)
+                return (resolveStandardApodImageURL(apod), .standard)
             }
-            return high
+            out = (high, .highDef)
         }
+
+        return out
     }
 
-    func resolveStandardApodImageURL(_ apod: APOD_JSON) -> URL? {
-        if let sd = URL(string: apod.url) {
-            return sd
+    func resolveStandardApodImageURL(_ apod: APOD) -> URL? {
+        if let sd = apod.url {
+            return URL(string: sd)
         }
 
         return nil
     }
 
-    func resolveHighDefApodImageURL(_ apod: APOD_JSON) -> URL? {
+    func resolveHighDefApodImageURL(_ apod: APOD) -> URL? {
         if let hdurl = apod.hdurl {
             if let hd = URL(string: hdurl) {
                 return hd
@@ -122,20 +111,50 @@ class NASA_API {
         return nil
     }
 
-    func fetchApodImageData(_ apod: APOD_JSON, quality: ApodImageQuality) async throws -> Data {
-        if let imageUrl = resolveApodImageURL(apod, quality: quality) {
-            let (imageData, response) = try await session.data(from: imageUrl)
-            try Requests.checkResponseCode(response)
-            return imageData
-        }
+    func assignImageByQuality(_ apod: APOD, data: Data, actualQuality: ApodActualImageQuality) throws {
+        print("assign image")
+        do {
+            switch actualQuality {
+            case .highDef:
+                let image = try APOD_hd_image.from(data)
+                print("high def")
+                apod.hdImage = image
+            case .standard:
+                let image = try APOD_image.from(data)
+                print("std def")
+                apod.image = image
+            }
 
-        throw API_Error.dataDecodeError
+            try PersistenceManager.shared.context.save()
+        } catch {
+            print("image assign error")
+            print(error)
+        }
     }
 
-    func fetchApodImageDataTask(_ apod: APOD_JSON, quality: ApodImageQuality, completion: @escaping URLSessionDataTaskCompletion) -> URLSessionDataTask? {
-        if let imageUrl = resolveApodImageURL(apod, quality: quality) {
-            let urlRequest = URLRequest(url: imageUrl)
-            let task = session.dataTask(with: urlRequest, completionHandler: completion)
+    func fetchApodImageData(_ apod: APOD, desiredQuality: ApodDesiredImageQuality) async throws {
+//        print("apod in fetchapodimagedata", apod, apod.url, apod.hdurl)
+        let (imageUrl, actualQuality) = resolveApodImageURL(apod, quality: desiredQuality)
+//        print("here")
+//        print("imageurl", imageUrl)
+        if let url = imageUrl {
+            let (imageData, response) = try await session.data(from: url)
+            try Requests.checkResponseCode(response)
+
+            try assignImageByQuality(apod, data: imageData, actualQuality: actualQuality)
+            print("image assigned", apod.dateString, actualQuality)
+        } else {
+            throw API_Error.dataDecodeError
+        }
+    }
+
+    func fetchApodImageDataTask(_ apod: APOD, desiredQuality: ApodDesiredImageQuality, completion: @escaping ApodImageDataTaskCompletion) -> URLSessionDataTask? {
+        let (imageUrl, actualQuality) = resolveApodImageURL(apod, quality: desiredQuality)
+        if let url = imageUrl {
+            let urlRequest = URLRequest(url: url)
+            let task = session.dataTask(with: urlRequest, completionHandler: { data, resp, error in
+                completion(data, resp, error, actualQuality)
+            })
 
             task.resume()
             return task

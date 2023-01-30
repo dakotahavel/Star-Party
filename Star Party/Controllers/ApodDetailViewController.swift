@@ -5,22 +5,63 @@
 //  Created by Dakota Havel on 1/17/23.
 //
 
+import CoreData
+import NotificationCenter
 import UIKit
 
 class ApodDetailViewController: UIViewController {
     var apodViewModel: ApodViewModel? {
         didSet {
+            print("Apod VM set")
             configureWithData()
         }
     }
+
+    var apodContext: NSManagedObjectContext?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         configureLayout()
         if apodViewModel != nil {
-            configureWithData()
+            apodContext = apodViewModel?.apod.managedObjectContext
+
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(apodDidSave),
+                name: .NSManagedObjectContextDidSave,
+                object: apodContext
+            )
         }
+//        if apodViewModel != nil {
+//            print("started with vm, configureWithData")
+//            configureWithData()
+//        }
+    }
+
+    @objc func apodDidSave(notification: NSNotification) {
+        guard let userInfo = notification.userInfo else { return }
+
+        if let inserts = userInfo[NSInsertedObjectsKey] as? Set<NSManagedObject>, !inserts.isEmpty {
+            print("--- INSERTS ---")
+            print(inserts)
+            print("+++++++++++++++")
+        }
+
+        if let updates = userInfo[NSUpdatedObjectsKey] as? Set<NSManagedObject>, !updates.isEmpty {
+            print("--- UPDATES ---")
+            for update in updates {
+                print(update.changedValues())
+            }
+            print("+++++++++++++++")
+        }
+
+        if let deletes = userInfo[NSDeletedObjectsKey] as? Set<NSManagedObject>, !deletes.isEmpty {
+            print("--- DELETES ---")
+            print(deletes)
+            print("+++++++++++++++")
+        }
+        configureWithData()
     }
 
     private var heroImageView: UIImageView = .configured { iv in
@@ -32,6 +73,13 @@ class ApodDetailViewController: UIViewController {
 
     private var copyrightLabel: UILabel = .configured { label in
         label.tintColor = .white
+    }
+
+    private var imageQualityLabel: UILabel = .configured { label in
+        label.tintColor = .white
+        label.backgroundColor = .systemBackground
+        label.text = ""
+        label.font = UIFont.preferredFont(forTextStyle: .title1)
     }
 
     private var titleLabel: UILabel = .configured { label in
@@ -64,6 +112,9 @@ class ApodDetailViewController: UIViewController {
         heroImageView.anchor(top: view.topAnchor, bottom: view.centerYAnchor)
         heroImageView.addSubview(copyrightLabel)
         copyrightLabel.anchor(left: heroImageView.leftAnchor, bottom: heroImageView.bottomAnchor, paddingLeft: 4, paddingBottom: 4)
+
+        heroImageView.addSubview(imageQualityLabel)
+        imageQualityLabel.anchor(bottom: heroImageView.bottomAnchor, right: heroImageView.rightAnchor, paddingBottom: 8, paddingRight: 8)
 
         view.addSubview(titleLabel)
         titleLabel.fillHorizontal(view)
@@ -101,37 +152,37 @@ class ApodDetailViewController: UIViewController {
 
     var fetchImageTask: Task<Void, Never>?
 
-    private func configureWithData() {
-        // alot of this is set up to handle where the view model already has data
-        // this isn't happening at the moment though b/c the cell that gets the sd image can't update the vm struct
-        // nor can this view persist the hd image to the model
-
+    @MainActor private func configureWithData() {
+        print("configure with data", apodViewModel?.apod)
         // check for high res image first
-        var data = apodViewModel?.apod.hdImageData
-        // then sd image
+        var data = apodViewModel?.apod.hdImage?.imageData
 
+        // then sd image
         var notHD = false
         if data == nil {
-            data = apodViewModel?.apod.sdImageData
+            data = apodViewModel?.apod.image?.imageData
             // try to get better image
             notHD = true
         }
 
         // if neither, try to get the best available and then load
-        guard let data else {
+        guard let data, fetchImageTask == nil else {
             fetchApodImage()
             return
         }
 
-        if !notHD, fetchImageTask == nil {
-            // if has sd image, try to get hd
+        if notHD, fetchImageTask == nil {
+            // if has sd image, try to get hd if haven't tried already
             fetchApodImage()
         }
 
-        UIView.transition(with: heroImageView, duration: 0.6, options: .transitionCrossDissolve) { [self] in
+        let option: UIView.AnimationOptions = notHD ? .transitionFlipFromTop : .transitionCurlUp
+        let imageQuality = notHD ? "SD" : ""
+        UIView.transition(with: heroImageView, duration: 0.6, options: option) { [self] in
             heroImageView.image = UIImage(data: data)
             heroImageView.contentMode = .scaleAspectFill
             heroImageView.clipsToBounds = true
+            imageQualityLabel.text = imageQuality
         }
 
         copyrightLabel.attributedText = apodViewModel?.copyrightAttrString
@@ -149,11 +200,13 @@ class ApodDetailViewController: UIViewController {
             previousTask.cancel()
         }
         fetchImageTask = Task {
-            if let data = try? await NASA_API.shared.fetchApodImageData(apodViewModel!.apod, quality: .best) {
-                DispatchQueue.main.async {
-                    self.apodViewModel?.apod.hdImageData = data
-                }
-            }
+            print("before fetch apod image")
+            _ = try? await NASA_API.shared.fetchApodImageData(apodViewModel!.apod, desiredQuality: .best)
+            print("fetchImageTask after fetch")
+            
+            apodViewModel?.apod.refresh()
+//            print("apod vm", apodViewModel?.apod.hd)
+//            configureWithData()
         }
     }
 }

@@ -52,6 +52,10 @@ extension Date {
     var year: Int {
         Calendar.current.component(Calendar.Component.year, from: self)
     }
+
+    func toString(formatter: DateFormatter) -> String? {
+        return formatter.string(from: self)
+    }
 }
 
 extension Dictionary where Key: Comparable {

@@ -20,17 +20,25 @@ public let oldestApodDate = ApodDateFormatter.date(from: "1995-06-16")
 
 // MARK: - ApodViewModel
 
-struct ApodViewModel {
-    var apod: APOD_JSON
+class ApodViewModel {
+    var apod: APOD
 
-    var dateObj: Date? {
-        return ApodDateFormatter.date(from: apod.date)
+    init(apod: APOD) {
+        self.apod = apod
+    }
+
+    var dateString: String {
+        if let date = apod.date {
+            return ApodDateFormatter.string(from: date)
+        } else {
+            return "Date Error"
+        }
     }
 
     var yearMonth: Date? {
         var dateComponents = DateComponents()
-        dateComponents.year = dateObj?.year
-        dateComponents.month = dateObj?.month
+        dateComponents.year = apod.date?.year
+        dateComponents.month = apod.date?.month
         // day must be > 0 or it will revert a day, i.e. be last day of prior month
         dateComponents.day = 1
         dateComponents.hour = 1
@@ -43,8 +51,11 @@ struct ApodViewModel {
     }
 
     var descriptionAttrString: NSAttributedString {
-        let desc = apod.explanation
-        let date = apod.date
+        let desc = apod.explanation ?? ""
+        guard let apodDate = apod.date else {
+            return NSAttributedString(string: "Date Not Found")
+        }
+        let date = ApodDateFormatter.string(from: apodDate)
 
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .center

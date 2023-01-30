@@ -57,10 +57,8 @@ class ApodImageCell: UICollectionViewCell {
 
         configureLoadingUI()
 
-        imageFetchTask = NASA_API.shared.fetchApodImageDataTask(apodViewModel.apod, quality: .standard, completion: { [weak self] data, resp, error in
+        imageFetchTask = NASA_API.shared.fetchApodImageDataTask(apodViewModel.apod, desiredQuality: .standard, completion: { [weak self] data, resp, error, _ in
             if error != nil || !Requests.hasGoodResponseCode(resp) {
-//                print(String(describing: error), String(describing: resp))
-//                self?.noImageDataFallback()
                 return
             }
 
@@ -90,7 +88,7 @@ class ApodImageCell: UICollectionViewCell {
             self?.imageView?.image = nil
             self?.loader.isHidden = false
             self?.loader.startAnimating()
-            self?.label.text = self?.apodViewModel?.apod.date
+            self?.label.text = self?.apodViewModel?.dateString
         }
     }
 
@@ -102,7 +100,7 @@ class ApodImageCell: UICollectionViewCell {
 //        print("no image data", apodViewModel.apod.date, apodViewModel.apod.title)
         DispatchQueue.main.async { [weak self] in
 
-            self?.label.text = apodViewModel.apod.date
+            self?.label.text = apodViewModel.dateString
         }
     }
 

@@ -157,7 +157,7 @@ class ApodFiltersViewController: UIViewController {
     // MARK: - Selectors
 
     @objc func handleApplyFilter() {
-        print("apply filter pressed")
+        
         var filter: ApodFilter
         if endDateOn {
             filter = .range(start_date: startDatePicker.date, end_date: endDatePicker.date)

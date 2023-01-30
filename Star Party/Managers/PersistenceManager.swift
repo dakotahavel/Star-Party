@@ -9,8 +9,8 @@ import CoreData
 import UIKit
 
 class PersistenceManager {
-    let shared = PersistenceManager()
-    let preview: PersistenceManager = {
+    static let shared = PersistenceManager()
+    static let preview: PersistenceManager = {
         let manager = PersistenceManager(inMemory: true)
 
         return manager
@@ -20,7 +20,7 @@ class PersistenceManager {
     let context: NSManagedObjectContext
 
     init(inMemory: Bool = false) {
-        let container = (UIApplication.shared.delegate as! AppDelegate).persistentContainer
+        let container = NSPersistentContainer(name: "Star_Party")
 
         if inMemory {
             container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")

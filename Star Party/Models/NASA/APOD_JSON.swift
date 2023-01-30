@@ -23,19 +23,47 @@ import Foundation
 
 struct APOD_JSON: Decodable, Identifiable {
     // Should be one per day so date is the unique ID
-    var id: String {
+    var id: Date {
         date
     }
 
+    let date: Date
     let copyright: String?
-    let date: String
     let explanation: String
-    let hdurl: String?
-    let media_type: String
-    let service_version: String
+    let mediaType: String
+    let serviceVersion: String
     let title: String
     let url: String
+    let hdurl: String?
 
-    var sdImageData: Data?
-    var hdImageData: Data?
+    enum CodingKeys: String, CodingKey {
+        case date
+        case copyright
+        case explanation
+        case mediaType = "media_type"
+        case serviceVersion = "service_version"
+        case title
+        case url
+        case hdurl
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let dateString = try container.decode(String.self, forKey: .date)
+        guard let date = ApodDateFormatter.date(from: dateString) else {
+            throw DecodingError.dataCorruptedError(
+                forKey: CodingKeys.date,
+                in: container,
+                debugDescription: "Date string does not match format expected by formatter."
+            )
+        }
+        self.date = date
+        self.copyright = try container.decodeIfPresent(String.self, forKey: .copyright)
+        self.explanation = try container.decode(String.self, forKey: .explanation)
+        self.mediaType = try container.decode(String.self, forKey: .mediaType)
+        self.serviceVersion = try container.decode(String.self, forKey: .serviceVersion)
+        self.title = try container.decode(String.self, forKey: .title)
+        self.url = try container.decode(String.self, forKey: .url)
+        self.hdurl = try container.decodeIfPresent(String.self, forKey: .hdurl)
+    }
 }
