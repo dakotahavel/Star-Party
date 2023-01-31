@@ -337,7 +337,7 @@ struct ApodsGridViewControllerRepresentation: UIViewControllerRepresentable {
             title: "2023 January",
             items:
             (11..<22).map { i in
-                ApodViewModel(apod: APOD_JSON(copyright: "C", date: "2023-01-\(i)", explanation: "", hdurl: nil, media_type: "", service_version: "", title: "\(i)", url: ""))
+                ApodViewModel(apod: APOD_JSON(copyright: "C", date: "2023-01-\(i)", explanation: "", hdurl: nil, mediaType: "", serviceVersion: "", title: "\(i)", url: ""))
             }
 
         ),
@@ -345,7 +345,7 @@ struct ApodsGridViewControllerRepresentation: UIViewControllerRepresentable {
             title: "2022 December",
             items:
             (11..<22).map { i in
-                ApodViewModel(apod: APOD_JSON(copyright: "C", date: "2022-12-\(i)", explanation: "", hdurl: nil, media_type: "", service_version: "", title: "\(i)", url: ""))
+                ApodViewModel(apod: APOD_JSON(copyright: "C", date: "2022-12-\(i)", explanation: "", hdurl: nil, mediaType: "", serviceVersion: "", title: "\(i)", url: ""))
             }
 
         ),

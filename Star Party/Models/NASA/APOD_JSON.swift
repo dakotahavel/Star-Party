@@ -31,11 +31,24 @@ struct APOD_JSON: Decodable, Identifiable {
     let date: String
     let explanation: String
     let hdurl: String?
-    let media_type: String
-    let service_version: String
+    let mediaType: String
+    let serviceVersion: String
     let title: String
     let url: String
 
     var sdImageData: Data?
     var hdImageData: Data?
+
+    enum CodingKeys: String, CodingKey {
+        case copyright
+        case date
+        case explanation
+        case hdurl
+        case mediaType = "media_type"
+        case serviceVersion = "service_version"
+        case title
+        case url
+        case sdImageData
+        case hdImageData
+    }
 }

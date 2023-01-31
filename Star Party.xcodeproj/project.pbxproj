@@ -17,7 +17,6 @@
 		651E3159298449D3009916A5 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 651E3158298449D3009916A5 /* OnboardingView.swift */; };
 		6539A4E12969FD8500470F80 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6539A4E02969FD8500470F80 /* AppDelegate.swift */; };
 		6539A4E32969FD8500470F80 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6539A4E22969FD8500470F80 /* SceneDelegate.swift */; };
-		6539A4EB2969FD8500470F80 /* Star_Party.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6539A4E92969FD8500470F80 /* Star_Party.xcdatamodeld */; };
 		6539A4ED2969FD8600470F80 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6539A4EC2969FD8600470F80 /* Assets.xcassets */; };
 		6539A4F02969FD8600470F80 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6539A4EE2969FD8600470F80 /* LaunchScreen.storyboard */; };
 		6539A4FB2969FD8600470F80 /* Space_ReportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6539A4FA2969FD8600470F80 /* Space_ReportTests.swift */; };
@@ -27,6 +26,9 @@
 		6539A51B296A190700470F80 /* api_keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6539A51A296A190700470F80 /* api_keys.swift */; };
 		6539A51E296A1A3100470F80 /* JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6539A51D296A1A3100470F80 /* JSON.swift */; };
 		6539A525296A7B4A00470F80 /* APOD_JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6539A524296A7B4A00470F80 /* APOD_JSON.swift */; };
+		65590A342988CD8600252E6A /* StarParty.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 65590A322988CD8600252E6A /* StarParty.xcdatamodeld */; };
+		65590A372988D01900252E6A /* APOD+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65590A352988D01900252E6A /* APOD+CoreDataClass.swift */; };
+		65590A382988D01900252E6A /* APOD+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65590A362988D01900252E6A /* APOD+CoreDataProperties.swift */; };
 		65634E662972628A00A13D45 /* TodaysApodViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65634E652972628A00A13D45 /* TodaysApodViewController.swift */; };
 		65634E6C2972693000A13D45 /* DebugViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65634E6B2972693000A13D45 /* DebugViews.swift */; };
 		65634E6E2972693B00A13D45 /* UIKitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65634E6D2972693B00A13D45 /* UIKitExtensions.swift */; };
@@ -77,7 +79,6 @@
 		6539A4DD2969FD8500470F80 /* Star Party.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Star Party.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6539A4E02969FD8500470F80 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6539A4E22969FD8500470F80 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		6539A4EA2969FD8500470F80 /* Space_Report.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Space_Report.xcdatamodel; sourceTree = "<group>"; };
 		6539A4EC2969FD8600470F80 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6539A4EF2969FD8600470F80 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6539A4F12969FD8600470F80 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -90,6 +91,9 @@
 		6539A51A296A190700470F80 /* api_keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = api_keys.swift; sourceTree = "<group>"; };
 		6539A51D296A1A3100470F80 /* JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSON.swift; sourceTree = "<group>"; };
 		6539A524296A7B4A00470F80 /* APOD_JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APOD_JSON.swift; sourceTree = "<group>"; };
+		65590A332988CD8600252E6A /* StarParty.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = StarParty.xcdatamodel; sourceTree = "<group>"; };
+		65590A352988D01900252E6A /* APOD+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APOD+CoreDataClass.swift"; sourceTree = "<group>"; };
+		65590A362988D01900252E6A /* APOD+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APOD+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		65634E652972628A00A13D45 /* TodaysApodViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodaysApodViewController.swift; sourceTree = "<group>"; };
 		65634E6B2972693000A13D45 /* DebugViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugViews.swift; sourceTree = "<group>"; };
 		65634E6D2972693B00A13D45 /* UIKitExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitExtensions.swift; sourceTree = "<group>"; };
@@ -212,7 +216,7 @@
 				6539A4EC2969FD8600470F80 /* Assets.xcassets */,
 				6539A4EE2969FD8600470F80 /* LaunchScreen.storyboard */,
 				6539A4F12969FD8600470F80 /* Info.plist */,
-				6539A4E92969FD8500470F80 /* Star_Party.xcdatamodeld */,
+				65590A322988CD8600252E6A /* StarParty.xcdatamodeld */,
 			);
 			path = "Star Party";
 			sourceTree = "<group>";
@@ -324,6 +328,8 @@
 		65D8451A296B2945008D7708 /* NASA */ = {
 			isa = PBXGroup;
 			children = (
+				65590A352988D01900252E6A /* APOD+CoreDataClass.swift */,
+				65590A362988D01900252E6A /* APOD+CoreDataProperties.swift */,
 				6539A524296A7B4A00470F80 /* APOD_JSON.swift */,
 			);
 			path = NASA;
@@ -467,21 +473,23 @@
 				651E315629843B90009916A5 /* UserSettingsManager.swift in Sources */,
 				6539A51B296A190700470F80 /* api_keys.swift in Sources */,
 				651E315229837CC5009916A5 /* ApodQuery.swift in Sources */,
-				6539A4EB2969FD8500470F80 /* Star_Party.xcdatamodeld in Sources */,
 				6539A515296A0B3C00470F80 /* Theme.swift in Sources */,
 				65634EE12979DEBA00A13D45 /* StandardTypeExtensions.swift in Sources */,
 				65634EEB297C5DED00A13D45 /* ApodFiltersViewController.swift in Sources */,
 				6539A525296A7B4A00470F80 /* APOD_JSON.swift in Sources */,
 				65634EBC2977172C00A13D45 /* API_Error.swift in Sources */,
 				65634EDF2979D1FD00A13D45 /* ApodImageCell.swift in Sources */,
+				65590A372988D01900252E6A /* APOD+CoreDataClass.swift in Sources */,
 				65CF08BB29847F8B004668F8 /* SwiftUIExtensions.swift in Sources */,
 				6539A51E296A1A3100470F80 /* JSON.swift in Sources */,
 				651E314C29837A89009916A5 /* Dev.swift in Sources */,
 				65634ECA2977B43400A13D45 /* TextLoadingPlaceholder.swift in Sources */,
 				65634ECF2978D90600A13D45 /* ApodsGridViewController.swift in Sources */,
+				65590A382988D01900252E6A /* APOD+CoreDataProperties.swift in Sources */,
 				65634EE5297A3B9C00A13D45 /* ApodHeaderCell.swift in Sources */,
 				651E314829837059009916A5 /* PersistenceManager.swift in Sources */,
 				65634E702974D55400A13D45 /* NetworkingExtensions.swift in Sources */,
+				65590A342988CD8600252E6A /* StarParty.xcdatamodeld in Sources */,
 				65634EC12977724C00A13D45 /* ApodDetailViewController.swift in Sources */,
 				65634E662972628A00A13D45 /* TodaysApodViewController.swift in Sources */,
 				65634E6C2972693000A13D45 /* DebugViews.swift in Sources */,
@@ -838,13 +846,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		6539A4E92969FD8500470F80 /* Star_Party.xcdatamodeld */ = {
+		65590A322988CD8600252E6A /* StarParty.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				6539A4EA2969FD8500470F80 /* Space_Report.xcdatamodel */,
+				65590A332988CD8600252E6A /* StarParty.xcdatamodel */,
 			);
-			currentVersion = 6539A4EA2969FD8500470F80 /* Space_Report.xcdatamodel */;
-			path = Star_Party.xcdatamodeld;
+			currentVersion = 65590A332988CD8600252E6A /* StarParty.xcdatamodel */;
+			path = StarParty.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
