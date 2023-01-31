@@ -16,7 +16,7 @@ class TodaysApodViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        view.backgroundColor = .systemBackground
         fetchTodaysApodAndImage()
         configureLayout()
     }

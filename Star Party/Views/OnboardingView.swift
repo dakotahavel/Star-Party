@@ -55,16 +55,20 @@ struct OnboardingView: View, NavigationHostable {
                             let home = ApodsGridViewController()
                             navigationHost?.setViewControllers([TodaysApodViewController(), home], animated: true)
                             home.perform(#selector(home.showSettings))
+                            UserSettingsManager.setSkipOnboarding(true)
                         }
                         Spacer()
                         Button("Continue with demo key") {
                             navigationHost?.setViewControllers([TodaysApodViewController()], animated: true)
+                            UserSettingsManager.setSkipOnboarding(true)
                         }
                     }
                     .padding()
                 }
             }.padding(EdgeInsets(top: 0, leading: 16, bottom: 24, trailing: 16))
-        }.onAppear {
+        }
+        .background(Color(UIColor.systemBackground))
+        .onAppear {
             if let navigationHost {
                 navigationHost.navigationBar.isHidden = true
             }

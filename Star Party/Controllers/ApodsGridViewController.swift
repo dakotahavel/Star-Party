@@ -59,6 +59,7 @@ class ApodsGridViewController: UICollectionViewController, ApodFiltersDelegate {
     }
 
     override func viewDidLoad() {
+        view.backgroundColor = .systemBackground
         collectionView.register(ApodImageCell.self, forCellWithReuseIdentifier: ApodImageCell.reuseId)
         collectionView.register(ApodHeaderCell.self, forSupplementaryViewOfKind: ApodHeaderCell.supplementaryKind, withReuseIdentifier: ApodHeaderCell.reuseId)
 

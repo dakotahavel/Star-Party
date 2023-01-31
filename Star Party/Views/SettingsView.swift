@@ -5,47 +5,15 @@
 //  Created by Dakota Havel on 1/26/23.
 //
 
-// import SwiftUI
-// import UIKit
-//
-//// MARK: - SettingsViewController
-//
-// class SettingsViewController: UIViewController {
-//    override func viewDidLoad() {
-//
-//    }
-// }
-//
-//// MARK: - SettingsViewControllerRepresentation
-//
-// struct SettingsViewControllerRepresentation: UIViewControllerRepresentable {
-//    func makeUIViewController(context: Context) -> SettingsViewController {
-//        return SettingsViewController()
-//    }
-//
-//    func updateUIViewController(_ uiViewController: SettingsViewController, context: Context) {
-//    }
-//
-//    typealias UIViewControllerType = SettingsViewController
-// }
-//
-//// MARK: - SettingsViewController_Preview
-//
-// struct SettingsViewController_Preview: PreviewProvider {
-//    static var previews: some View {
-//        Color(UIColor.systemBackground)
-//            .sheet(isPresented: .constant(true)) {
-//                SettingsViewControllerRepresentation().ignoresSafeArea()
-//            }
-//    }
-// }
-
 import SwiftUI
+
+let defaultNasaKey = "DEMO_KEY"
 
 // MARK: - SettingsView
 
 struct SettingsView: View {
-    @AppStorage(UserSettingsKeys.kApodApi) var nasaKey: String = "DEMO_KEY"
+    @AppStorage(UserSettingsKeys.kApodApi) var nasaKey: String = UserSettingsManager.getNasaApiKey()
+    @AppStorage(UserSettingsKeys.kSkipOnboarding) var skipOnboarding: Bool = UserSettingsManager.getSkipOnboarding()
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -75,9 +43,11 @@ struct SettingsView: View {
                     }
                 }
 
-//                Section(header: Text("Onboarding")) {
-//
-//                }
+                Section(header: Text("Onboarding")) {
+                    HStack(alignment: .center) {
+                        Toggle("Skip Welcome Screen", isOn: $skipOnboarding)
+                    }
+                }
             }
             .cornerRadius(16)
         }

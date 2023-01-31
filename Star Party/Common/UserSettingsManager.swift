@@ -15,4 +15,8 @@ enum UserSettingsManager {
     static func getSkipOnboarding() -> Bool {
         UserDefaults.standard.bool(forKey: UserSettingsKeys.kSkipOnboarding)
     }
+
+    static func setSkipOnboarding(_ to: Bool) {
+        UserDefaults.standard.set(to, forKey: UserSettingsKeys.kSkipOnboarding)
+    }
 }
